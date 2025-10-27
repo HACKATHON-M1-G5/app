@@ -1,76 +1,75 @@
-# ⚡ Supabase + Nuxt 4 Authentication Starter
+# Nuxt Minimal Starter
 
-> A modern and secure authentication boilerplate built with the latest versions of **Nuxt 4** and **Supabase**. Provides out-of-the-box support for user registration and login functionality, ideal for rapidly initializing new full-stack projects.
+Look at the [Nuxt documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
 
-## 🆕 Changelog
+## Setup
 
-- Migrated to **Nuxt 4** using the new `nuxt` package
-- Integrated **latest Supabase JavaScript client** (`@supabase/supabase-js`)
-- Switched to **pnpm** as the preferred package manager for faster, disk-efficient installs
-
-## 🚀 Live Demonstrations
-
-| Deployment Platform | Live URL                                                                 |
-| ------------------- | ------------------------------------------------------------------------ |
-| Vercel              | [https://supaauth-nuxt4.vercel.app/](https://supaauth-nuxt4.vercel.app/) |
-| NuxtHub             | [https://supaauth.nuxt.dev/](https://supaauth.nuxt.dev/)                 |
-
-## 🖼️ UI Preview
-
-<div align="center">
-  <img src="https://user-images.githubusercontent.com/79358543/229441570-3ba48ca8-8cf3-4fd4-aac7-2cc5eac67a03.png" width="80%" />
-  <br/><br/>
-  <img src="https://user-images.githubusercontent.com/79358543/229441594-e7cbec31-726d-4029-96ba-d7631fd3aef5.gif" width="60%" />
-</div>
-
-## ✅ Key Features
-
-- 🔐 Email/password-based authentication powered by **Supabase Auth**
-- 💡 Seamless integration with **Nuxt 4 Composition API**
-- 🧱 Minimal and modular architecture, ideal for customization and scaling
-- 📱 Fully responsive design for both mobile and desktop
-- 🧼 Clean, maintainable codebase with best practices in mind
-
-## ⚙️ Project Setup
-
-Ensure you have [Node.js](https://nodejs.org/) and [pnpm](https://pnpm.io) installed.
+Make sure to install dependencies:
 
 ```bash
-# Install dependencies
+# npm
+npm install
+
+# pnpm
 pnpm install
 
-# Start the development server
+# yarn
+yarn install
+
+# bun
+bun install
+```
+
+## Development Server
+
+Start the development server on `http://localhost:3000`:
+
+```bash
+# npm
+npm run dev
+
+# pnpm
 pnpm dev
+
+# yarn
+yarn dev
+
+# bun
+bun run dev
 ```
 
-## 🔧 Supabase Configuration
+## Production
 
-1. Create a project via [supabase.com](https://supabase.com).
-2. Go to **Project Settings → API** and retrieve your `SUPABASE_URL` and `SUPABASE_ANON_KEY`.
-3. Create a `.env` file in your project root:
+Build the application for production:
 
-```env
-SUPABASE_URL=https://your-project-id.supabase.co
-SUPABASE_ANON_KEY=your-anon-key
+```bash
+# npm
+npm run build
+
+# pnpm
+pnpm build
+
+# yarn
+yarn build
+
+# bun
+bun run build
 ```
 
-## 📚 Documentation
+Locally preview production build:
 
-- [Nuxt 4 Documentation](https://nuxt.com/docs)
-- [Supabase Auth Documentation](https://supabase.com/docs/guides/auth)
-- [Supabase Client Reference](https://supabase.com/docs/reference/javascript/introduction)
+```bash
+# npm
+npm run preview
 
----
+# pnpm
+pnpm preview
 
-## 🧑‍💻 Author
+# yarn
+yarn preview
 
-**Sefa Bulak**
-📫 Contact: [zckhtln@icloud.com](mailto:zckhtln@icloud.com)
-🐙 GitHub: [github.com/zackhatlen](https://github.com/zackhatlen)
-🐦 Twitter: [@ZHatlen](https://twitter.com/ZHatlen)
+# bun
+bun run preview
+```
 
----
-
-## 📝 License
-
-This project is released under the [MIT License](LICENSE).
+Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
