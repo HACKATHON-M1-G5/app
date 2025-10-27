@@ -16,6 +16,7 @@
     "@nuxt/content": "3.7.1",
     "@nuxt/image": "1.11.0",
     "@nuxt/ui": "^4.0.1",
+    "@supabase/supabase-js": "^2.76.1",
     "@unovis/ts": "^1.6.1",
     "@unovis/vue": "^1.6.1",
     "@vueuse/nuxt": "^13.9.0",
