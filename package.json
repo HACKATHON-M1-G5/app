@@ -1,7 +1,8 @@
 {
-  "name": "hackathon-equipe-5",
-  "type": "module",
+  "name": "plateforme-paris",
+  "version": "1.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
@@ -10,13 +11,18 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "@nuxt/content": "^3.7.1",
-    "@nuxt/image": "^1.11.0",
-    "@nuxt/ui": "^4.1.0",
-    "better-sqlite3": "^12.4.1",
-    "nuxt": "^4.2.0",
-    "typescript": "^5.9.3",
-    "vue": "^3.5.22",
-    "vue-router": "^4.6.3"
+    "@nuxtjs/supabase": "^1.4.0",
+    "@pinia/nuxt": "^0.5.5",
+    "pinia": "^2.2.4",
+    "nuxt": "^3.13.2",
+    "vue": "latest"
+  },
+  "devDependencies": {
+    "@nuxtjs/tailwindcss": "^6.12.1",
+    "@nuxtjs/color-mode": "^3.5.1",
+    "@types/node": "^20.17.6",
+    "daisyui": "^4.12.10",
+    "typescript": "^5.6.3"
   }
 }
+
