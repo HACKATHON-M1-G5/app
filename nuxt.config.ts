@@ -13,16 +13,16 @@ export default defineNuxtConfig({
   },
 
   css: ["~/assets/css/main.css"],
-
-  routeRules: {
-    "/api/**": {
-      cors: true,
-    },
-  },
   runtimeConfig: {
     public: {
       supabaseUrl: process.env.SUPABASE_URL,
       supabasePublishableKey: process.env.SUPABASE_PUBLISHABLE_KEY,
+    },
+  },
+
+  routeRules: {
+    "/api/**": {
+      cors: true,
     },
   },
   compatibilityDate: "2024-07-11",
@@ -32,13 +32,6 @@ export default defineNuxtConfig({
       stylistic: {
         commaDangle: "never",
         braceStyle: "1tbs",
-      },
-    },
-  },
-  hub: {
-    bindings: {
-      observability: {
-        logs: true,
       },
     },
   },
