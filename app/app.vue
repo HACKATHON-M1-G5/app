@@ -1,42 +1,62 @@
-<script setup lang="ts">
-const colorMode = useColorMode()
-
-const color = computed(() => colorMode.value === 'dark' ? '#1b1718' : 'white')
-
-useHead({
-  meta: [
-    { charset: 'utf-8' },
-    { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-    { key: 'theme-color', name: 'theme-color', content: color }
-  ],
-  link: [
-    { rel: 'icon', href: '/favicon.ico' }
-  ],
-  htmlAttrs: {
-    lang: 'en'
-  }
-})
-
-const title = 'Nuxt Dashboard Template'
-const description = 'A professional dashboard template built with Nuxt UI, featuring multiple pages, data visualization, and comprehensive management capabilities for creating powerful admin interfaces.'
-
-useSeoMeta({
-  title,
-  description,
-  ogTitle: title,
-  ogDescription: description,
-  ogImage: 'https://ui.nuxt.com/assets/templates/nuxt/dashboard-light.png',
-  twitterImage: 'https://ui.nuxt.com/assets/templates/nuxt/dashboard-light.png',
-  twitterCard: 'summary_large_image'
-})
-</script>
-
 <template>
-  <UApp>
-    <NuxtLoadingIndicator />
-
-    <NuxtLayout>
-      <NuxtPage />
-    </NuxtLayout>
-  </UApp>
+  <NuxtLayout>
+    <NuxtPage />
+  </NuxtLayout>
 </template>
+
+<style lang="postcss">
+@keyframes fadeIn {
+  0% {
+    opacity: 0.001;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.001;
+  }
+}
+.page-enter-active,
+.page-leave-active,
+.layout-enter-active,
+.layout-leave-active {
+  transition: opacity 250ms;
+}
+.page-enter,
+.page-leave-to,
+.layout-enter,
+.layout-leave-to {
+  opacity: 0;
+}
+.page-enter-active,
+.layout-enter-active {
+  animation-duration: 250ms;
+  animation-name: fadeIn;
+  animation-timing-function: linear;
+  backface-visibility: hidden;
+}
+.page-leave-active,
+.layout-leave-active {
+  animation-name: fadeOut;
+  animation-duration: 0.25s;
+}
+/* Scale Y */
+.scale-y-enter-active,
+.scale-y-leave-active {
+  transition: all 300ms linear;
+  will-change: max-height, opacity;
+  max-height: 160px;
+  overflow: hidden;
+  opacity: 1;
+}
+.scale-y-enter-from,
+.scale-y-leave-to {
+  max-height: 0;
+  opacity: 0;
+}
+</style>

@@ -1,64 +1,76 @@
-# Nuxt Dashboard Template
+# ⚡ Supabase + Nuxt 4 Authentication Starter
 
-[![Nuxt UI](https://img.shields.io/badge/Made%20with-Nuxt%20UI-00DC82?logo=nuxt&labelColor=020420)](https://ui.nuxt.com)
+> A modern and secure authentication boilerplate built with the latest versions of **Nuxt 4** and **Supabase**. Provides out-of-the-box support for user registration and login functionality, ideal for rapidly initializing new full-stack projects.
 
-Get started with the Nuxt dashboard template with multiple pages, collapsible sidebar, keyboard shortcuts, light & dark more, command palette and more, powered by [Nuxt UI](https://ui.nuxt.com).
+## 🆕 Changelog
 
-- [Live demo](https://dashboard-template.nuxt.dev/)
-- [Documentation](https://ui.nuxt.com/docs/getting-started/installation/nuxt)
+- Migrated to **Nuxt 4** using the new `nuxt` package
+- Integrated **latest Supabase JavaScript client** (`@supabase/supabase-js`)
+- Switched to **pnpm** as the preferred package manager for faster, disk-efficient installs
 
-<a href="https://dashboard-template.nuxt.dev/" target="_blank">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://ui.nuxt.com/assets/templates/nuxt/dashboard-dark.png">
-    <source media="(prefers-color-scheme: light)" srcset="https://ui.nuxt.com/assets/templates/nuxt/dashboard-light.png">
-    <img alt="Nuxt Dashboard Template" src="https://ui.nuxt.com/assets/templates/nuxt/dashboard-light.png">
-  </picture>
-</a>
+## 🚀 Live Demonstrations
 
-> The dashboard template for Vue is on https://github.com/nuxt-ui-templates/dashboard-vue.
+| Deployment Platform | Live URL                                                                 |
+| ------------------- | ------------------------------------------------------------------------ |
+| Vercel              | [https://supaauth-nuxt4.vercel.app/](https://supaauth-nuxt4.vercel.app/) |
+| NuxtHub             | [https://supaauth.nuxt.dev/](https://supaauth.nuxt.dev/)                 |
 
-## Quick Start
+## 🖼️ UI Preview
 
-```bash [Terminal]
-npm create nuxt@latest -- -t github:nuxt-ui-templates/dashboard
-```
+<div align="center">
+  <img src="https://user-images.githubusercontent.com/79358543/229441570-3ba48ca8-8cf3-4fd4-aac7-2cc5eac67a03.png" width="80%" />
+  <br/><br/>
+  <img src="https://user-images.githubusercontent.com/79358543/229441594-e7cbec31-726d-4029-96ba-d7631fd3aef5.gif" width="60%" />
+</div>
 
-## Deploy your own
+## ✅ Key Features
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-name=dashboard&repository-url=https%3A%2F%2Fgithub.com%2Fnuxt-ui-templates%2Fdashboard&demo-image=https%3A%2F%2Fui.nuxt.com%2Fassets%2Ftemplates%2Fnuxt%2Fdashboard-dark.png&demo-url=https%3A%2F%2Fdashboard-template.nuxt.dev%2F&demo-title=Nuxt%20Dashboard%20Template&demo-description=A%20dashboard%20template%20with%20multi-column%20layout%20for%20building%20sophisticated%20admin%20interfaces.)
+- 🔐 Email/password-based authentication powered by **Supabase Auth**
+- 💡 Seamless integration with **Nuxt 4 Composition API**
+- 🧱 Minimal and modular architecture, ideal for customization and scaling
+- 📱 Fully responsive design for both mobile and desktop
+- 🧼 Clean, maintainable codebase with best practices in mind
 
-## Setup
+## ⚙️ Project Setup
 
-Make sure to install the dependencies:
+Ensure you have [Node.js](https://nodejs.org/) and [pnpm](https://pnpm.io) installed.
 
 ```bash
+# Install dependencies
 pnpm install
-```
 
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
+# Start the development server
 pnpm dev
 ```
 
-## Production
+## 🔧 Supabase Configuration
 
-Build the application for production:
+1. Create a project via [supabase.com](https://supabase.com).
+2. Go to **Project Settings → API** and retrieve your `SUPABASE_URL` and `SUPABASE_ANON_KEY`.
+3. Create a `.env` file in your project root:
 
-```bash
-pnpm build
+```env
+SUPABASE_URL=https://your-project-id.supabase.co
+SUPABASE_ANON_KEY=your-anon-key
 ```
 
-Locally preview production build:
+## 📚 Documentation
 
-```bash
-pnpm preview
-```
+- [Nuxt 4 Documentation](https://nuxt.com/docs)
+- [Supabase Auth Documentation](https://supabase.com/docs/guides/auth)
+- [Supabase Client Reference](https://supabase.com/docs/reference/javascript/introduction)
 
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+---
 
-## Renovate integration
+## 🧑‍💻 Author
 
-Install [Renovate GitHub app](https://github.com/apps/renovate/installations/select_target) on your repository and you are good to go.
+**Sefa Bulak**
+📫 Contact: [zckhtln@icloud.com](mailto:zckhtln@icloud.com)
+🐙 GitHub: [github.com/zackhatlen](https://github.com/zackhatlen)
+🐦 Twitter: [@ZHatlen](https://twitter.com/ZHatlen)
+
+---
+
+## 📝 License
+
+This project is released under the [MIT License](LICENSE).
