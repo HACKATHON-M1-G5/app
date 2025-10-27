@@ -15,7 +15,7 @@
         </ul>
       </div>
       <NuxtLink to="/" class="btn btn-ghost normal-case text-xl">
-        🎲 PronosBet
+        🎲 LoseAMax
       </NuxtLink>
     </div>
     

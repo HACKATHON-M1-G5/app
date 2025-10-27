@@ -35,6 +35,20 @@ export default defineNuxtConfig({
   typescript: {
     strict: true,
     typeCheck: false
+  },
+
+  nitro: {
+    experimental: {
+      websocket: true
+    }
+  },
+
+  vite: {
+    server: {
+      hmr: {
+        clientPort: 3000
+      }
+    }
   }
 })
 
