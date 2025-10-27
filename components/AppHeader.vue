@@ -14,8 +14,9 @@
           <li><NuxtLink to="/groups/create">Créer un Groupe</NuxtLink></li>
         </ul>
       </div>
-      <NuxtLink to="/" class="btn btn-ghost normal-case text-xl">
-        🎲 LoseAMax
+      <NuxtLink to="/" class="btn btn-ghost normal-case text-xl font-bold tracking-tight">
+        <span class="text-red-600">🎲</span>
+        <span class="bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">LoseAMax</span>
       </NuxtLink>
     </div>
     

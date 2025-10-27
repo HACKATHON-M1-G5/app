@@ -7,8 +7,16 @@ export default defineNuxtConfig({
     '@nuxtjs/supabase',
     '@nuxtjs/tailwindcss',
     '@pinia/nuxt',
-    '@nuxtjs/color-mode'
+    '@nuxtjs/color-mode',
+    '@nuxtjs/google-fonts'
   ],
+
+  googleFonts: {
+    families: {
+      Montserrat: [300, 400, 500, 600, 700, 800, 900]
+    },
+    display: 'swap'
+  },
 
   supabase: {
     redirect: false,
@@ -20,7 +28,9 @@ export default defineNuxtConfig({
   },
 
   colorMode: {
-    classSuffix: ''
+    classSuffix: '',
+    preference: 'redblack',
+    dataValue: 'redblack'
   },
 
   runtimeConfig: {

@@ -2,3 +2,59 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  body {
+    @apply font-sans;
+  }
+}
+
+/* Styles personnalisés pour le thème rouge et noir */
+:root[data-theme="redblack"] {
+  color-scheme: dark;
+}
+
+/* Amélioration des cartes */
+.card {
+  @apply border border-red-900/30;
+}
+
+.card:hover {
+  @apply border-red-600/50;
+}
+
+/* Amélioration des badges */
+.badge-primary {
+  @apply bg-gradient-to-r from-red-600 to-red-700;
+}
+
+.badge-secondary {
+  @apply bg-gradient-to-r from-red-800 to-red-900;
+}
+
+/* Amélioration des boutons */
+.btn-primary {
+  @apply bg-gradient-to-r from-red-600 to-red-700 border-red-700;
+}
+
+.btn-primary:hover {
+  @apply from-red-700 to-red-800 border-red-800;
+}
+
+/* Scrollbar personnalisée */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-neutral;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-red-900 rounded-lg;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-red-700;
+}
+

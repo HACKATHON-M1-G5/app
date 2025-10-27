@@ -4,7 +4,12 @@
     <div class="hero bg-base-100 shadow-xl rounded-box mb-8">
       <div class="hero-content text-center py-12">
         <div class="max-w-2xl">
-          <h1 class="text-5xl font-bold mb-4">🎲 Bienvenue sur LoseAMax</h1>
+          <h1 class="text-5xl font-bold mb-4">
+            <span class="text-red-600">🎲</span>
+            <span class="bg-gradient-to-r from-red-600 via-red-500 to-red-600 bg-clip-text text-transparent">
+              Bienvenue sur LoseAMax
+            </span>
+          </h1>
           <p class="text-xl mb-8">
             Créez des paris entre amis, rejoignez des groupes et tentez de gagner un maximum de tokens !
           </p>
@@ -216,12 +221,6 @@ const publicPronos = ref<PronoWithBets[]>([])
 const activeBets = ref<UserBetWithDetails[]>([])
 const loadingPublicPronos = ref(false)
 
-watch(user, async (newUser) => {
-  if (newUser) {
-    await loadDashboardData()
-  }
-}, { immediate: true })
-
 const loadDashboardData = async () => {
   if (!user.value) return
 
@@ -243,5 +242,11 @@ const loadDashboardData = async () => {
     loadingPublicPronos.value = false
   }
 }
+
+watch(user, async (newUser) => {
+  if (newUser) {
+    await loadDashboardData()
+  }
+}, { immediate: true })
 </script>
 
