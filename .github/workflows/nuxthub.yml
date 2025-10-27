@@ -19,11 +19,15 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: 'npm'
-          cache-dependency-path: package-lock.json
+          cache: 'npm' # le cache sera effectif uniquement si package-lock.json est présent
 
       - name: Install dependencies
-        run: npm ci
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci
+          else
+            npm install --no-audit --no-fund
+          fi
 
       - name: Ensure NuxtHub module is installed
         run: npx nuxthub@latest ensure
