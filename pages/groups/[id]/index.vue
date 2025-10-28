@@ -72,7 +72,7 @@
 
             <NuxtLink
               v-if="isOwner"
-              :to="`/groups/${team.id}/create-prono`"
+              :to="`/groups/${teamId}/create-prono`"
               class="btn btn-primary btn-sm md:btn-md"
             >
               ➕ Créer un pari
@@ -89,6 +89,13 @@
           @click="activeTab = 'pronos'"
         >
           🎯 Paris
+        </a>
+        <a
+          class="tab"
+          :class="{ 'tab-active': activeTab === 'ranking' }"
+          @click="activeTab = 'ranking'"
+        >
+          🏆 Classement
         </a>
         <a
           class="tab"
@@ -141,12 +148,145 @@
                   </NuxtLink>
                   <NuxtLink 
                     v-if="isOwner && !isPronoActive(prono) && !isPronoPending(prono)"
-                    :to="`/groups/${team.id}/results/${prono.id}`" 
+                    :to="`/groups/${teamId}/results/${prono.id}`" 
                     class="btn btn-success btn-sm"
                   >
                     🏆 Résultats
                   </NuxtLink>
                 </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div v-if="activeTab === 'ranking'">
+        <div class="space-y-4">
+          <!-- Top 3 Podium -->
+          <div v-if="rankedMembers.length >= 3" class="flex justify-center items-end gap-4 mb-8">
+            <!-- 2ème place -->
+            <div class="flex flex-col items-center">
+              <div class="text-6xl mb-2">🥈</div>
+              <div class="card bg-base-100 shadow-xl border-2 border-gray-400 w-32">
+                <div class="card-body p-4 text-center">
+                  <div class="avatar placeholder mx-auto mb-2">
+                    <div class="bg-gray-400 text-white rounded-full w-16">
+                      <span class="text-2xl">{{ rankedMembers[1].userdata.username[0].toUpperCase() }}</span>
+                    </div>
+                  </div>
+                  <h3 class="font-bold text-sm">{{ rankedMembers[1].userdata.username }}</h3>
+                  <div class="badge badge-warning mt-1">{{ rankedMembers[1].token }} 🪙</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 1ère place -->
+            <div class="flex flex-col items-center -mt-8">
+              <div class="text-8xl mb-2">🥇</div>
+              <div class="card bg-base-100 shadow-2xl border-4 border-yellow-500 w-36">
+                <div class="card-body p-4 text-center">
+                  <div class="avatar placeholder mx-auto mb-2">
+                    <div class="bg-yellow-500 text-white rounded-full w-20">
+                      <span class="text-3xl">{{ rankedMembers[0].userdata.username[0].toUpperCase() }}</span>
+                    </div>
+                  </div>
+                  <h3 class="font-bold">{{ rankedMembers[0].userdata.username }}</h3>
+                  <div class="badge badge-warning badge-lg mt-1">{{ rankedMembers[0].token }} 🪙</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 3ème place -->
+            <div class="flex flex-col items-center">
+              <div class="text-6xl mb-2">🥉</div>
+              <div class="card bg-base-100 shadow-xl border-2 border-orange-700 w-32">
+                <div class="card-body p-4 text-center">
+                  <div class="avatar placeholder mx-auto mb-2">
+                    <div class="bg-orange-700 text-white rounded-full w-16">
+                      <span class="text-2xl">{{ rankedMembers[2].userdata.username[0].toUpperCase() }}</span>
+                    </div>
+                  </div>
+                  <h3 class="font-bold text-sm">{{ rankedMembers[2].userdata.username }}</h3>
+                  <div class="badge badge-warning mt-1">{{ rankedMembers[2].token }} 🪙</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Classement complet -->
+          <div class="card bg-base-100 shadow-xl border border-red-900/30">
+            <div class="card-body">
+              <h2 class="card-title mb-4">Classement Complet</h2>
+              
+              <div class="overflow-x-auto">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Position</th>
+                      <th>Membre</th>
+                      <th>Tokens</th>
+                      <th>Statut</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr 
+                      v-for="(member, index) in rankedMembers" 
+                      :key="member.id"
+                      :class="{
+                        'bg-yellow-500/10': index === 0,
+                        'bg-gray-400/10': index === 1,
+                        'bg-orange-700/10': index === 2,
+                      }"
+                    >
+                      <td>
+                        <div class="flex items-center gap-2">
+                          <span v-if="index === 0" class="text-2xl">🥇</span>
+                          <span v-else-if="index === 1" class="text-2xl">🥈</span>
+                          <span v-else-if="index === 2" class="text-2xl">🥉</span>
+                          <span v-else class="font-bold">{{ index + 1 }}</span>
+                        </div>
+                      </td>
+                      <td>
+                        <div class="flex items-center gap-3">
+                          <div class="avatar placeholder">
+                            <div 
+                              class="rounded-full w-10"
+                              :class="{
+                                'bg-yellow-500 text-white': index === 0,
+                                'bg-gray-400 text-white': index === 1,
+                                'bg-orange-700 text-white': index === 2,
+                                'bg-neutral-focus text-neutral-content': index > 2,
+                              }"
+                            >
+                              <span class="text-sm">{{ member.userdata.username[0].toUpperCase() }}</span>
+                            </div>
+                          </div>
+                          <div>
+                            <div class="font-bold">{{ member.userdata.username }}</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td>
+                        <div class="badge badge-lg badge-warning">
+                          {{ member.token }} 🪙
+                        </div>
+                      </td>
+                      <td>
+                        <div
+                          class="badge"
+                          :class="{
+                            'badge-primary': member.status === 'owner',
+                            'badge-success': member.status === 'member',
+                            'badge-warning': member.status === 'pending',
+                            'badge-error': member.status === 'banned',
+                          }"
+                        >
+                          {{ statusLabel(member.status) }}
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
@@ -254,7 +394,7 @@ const loading = ref(true)
 const loadingPronos = ref(false)
 const joining = ref(false)
 const leaving = ref(false)
-const activeTab = ref<'pronos' | 'members'>('pronos')
+const activeTab = ref<'pronos' | 'ranking' | 'members'>('pronos')
 
 const isOwner = ref(false)
 
@@ -265,6 +405,13 @@ const userMembership = computed(() => {
 
 const isMember = computed(() => {
   return userMembership.value?.status === 'member'
+})
+
+const rankedMembers = computed(() => {
+  // Filtrer uniquement les membres actifs (member ou owner) et trier par tokens
+  return members.value
+    .filter((m) => m.status === 'member' || m.status === 'owner')
+    .sort((a, b) => b.token - a.token)
 })
 
 onMounted(async () => {
