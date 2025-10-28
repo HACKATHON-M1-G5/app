@@ -41,7 +41,9 @@
               <h3 class="font-bold text-sm truncate" :title="rankedUsers[1].username">
                 {{ rankedUsers[1].username }}
               </h3>
-              <div class="badge badge-warning mt-1">{{ rankedUsers[1].tokens }} 🪙</div>
+              <div class="flex justify-center">
+                <div class="badge badge-warning badge-lg mt-1">{{ rankedUsers[1].tokens }} 💰</div>
+              </div>
               <div class="text-xs opacity-70 mt-1">{{ (rankedUsers[1].winrate * 100).toFixed(0) }}% WR</div>
             </div>
           </div>
@@ -60,7 +62,9 @@
               <h3 class="font-bold truncate" :title="rankedUsers[0].username">
                 {{ rankedUsers[0].username }}
               </h3>
-              <div class="badge badge-warning badge-lg mt-1">{{ rankedUsers[0].tokens }} 🪙</div>
+              <div class="flex justify-center">
+                <div class="badge badge-warning badge-lg mt-1">{{ rankedUsers[0].tokens }} 💰</div>
+              </div>
               <div class="text-xs opacity-70 mt-1">{{ (rankedUsers[0].winrate * 100).toFixed(0) }}% WR</div>
             </div>
           </div>
@@ -79,7 +83,9 @@
               <h3 class="font-bold text-sm truncate" :title="rankedUsers[2].username">
                 {{ rankedUsers[2].username }}
               </h3>
-              <div class="badge badge-warning mt-1">{{ rankedUsers[2].tokens }} 🪙</div>
+              <div class="flex justify-center">
+                <div class="badge badge-warning badge-lg mt-1">{{ rankedUsers[2].tokens }} 💰</div>
+              </div>
               <div class="text-xs opacity-70 mt-1">{{ (rankedUsers[2].winrate * 100).toFixed(0) }}% WR</div>
             </div>
           </div>
@@ -148,7 +154,7 @@
                   </td>
                   <td>
                     <div class="badge badge-lg badge-warning">
-                      {{ user.tokens }} 🪙
+                      {{ user.tokens }} 💰
                     </div>
                   </td>
                   <td>
