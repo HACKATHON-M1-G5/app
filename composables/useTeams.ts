@@ -32,15 +32,13 @@ export const useTeams = () => {
     if (teamError) throw teamError
 
     // Add creator as owner
-    const { error: memberError } = await supabase
-      .from('team_userdata')
-      .insert({
-        team_id: team.id,
-        userdata_id: userData.value.id,
-        status: 'owner',
-        joined_at: Date.now(),
-        token: 1000,
-      })
+    const { error: memberError } = await supabase.from('team_userdata').insert({
+      team_id: team.id,
+      userdata_id: userData.value.id,
+      status: 'owner',
+      joined_at: Date.now(),
+      token: 1000,
+    })
 
     if (memberError) throw memberError
 
@@ -52,16 +50,18 @@ export const useTeams = () => {
 
     const { data, error } = await supabase
       .from('team_userdata')
-      .select(`
+      .select(
+        `
         *,
         team:Teams (*)
-      `)
+      `
+      )
       .eq('userdata_id', userData.value.id)
       .in('status', ['member', 'owner'])
 
     if (error) throw error
 
-    return data.map(item => item.team) as Team[]
+    return data.map((item) => item.team) as Team[]
   }
 
   const getPublicTeams = async () => {
@@ -77,11 +77,7 @@ export const useTeams = () => {
   }
 
   const getTeamById = async (teamId: string) => {
-    const { data, error } = await supabase
-      .from('Teams')
-      .select('*')
-      .eq('id', teamId)
-      .single()
+    const { data, error } = await supabase.from('Teams').select('*').eq('id', teamId).single()
 
     if (error) throw error
 
@@ -91,10 +87,12 @@ export const useTeams = () => {
   const getTeamMembers = async (teamId: string) => {
     const { data, error } = await supabase
       .from('team_userdata')
-      .select(`
+      .select(
+        `
         *,
         userdata:UserDatas (*)
-      `)
+      `
+      )
       .eq('team_id', teamId)
 
     if (error) throw error
@@ -107,20 +105,18 @@ export const useTeams = () => {
 
     // Verify join code for private teams
     const team = await getTeamById(teamId)
-    
+
     if (team.privacy && team.join_code !== joinCode) {
-      throw new Error('Code d\'invitation invalide')
+      throw new Error("Code d'invitation invalide")
     }
 
-    const { error } = await supabase
-      .from('team_userdata')
-      .insert({
-        team_id: teamId,
-        userdata_id: userData.value.id,
-        status: team.privacy ? 'pending' : 'member',
-        joined_at: Date.now(),
-        token: 1000,
-      })
+    const { error } = await supabase.from('team_userdata').insert({
+      team_id: teamId,
+      userdata_id: userData.value.id,
+      status: team.privacy ? 'pending' : 'member',
+      joined_at: Date.now(),
+      token: 1000,
+    })
 
     if (error) throw error
 
@@ -157,11 +153,7 @@ export const useTeams = () => {
     return true
   }
 
-  const updateMemberTokens = async (
-    teamId: string,
-    userId: string,
-    tokens: number
-  ) => {
+  const updateMemberTokens = async (teamId: string, userId: string, tokens: number) => {
     const { error } = await supabase
       .from('team_userdata')
       .update({ token: tokens })
@@ -230,4 +222,3 @@ export const useTeams = () => {
     getUserTeamTokens,
   }
 }
-
