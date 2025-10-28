@@ -29,10 +29,7 @@
         </ul>
       </div>
       <NuxtLink to="/" class="btn btn-ghost normal-case text-xl font-bold tracking-tight">
-        <span class="text-red-600">🎲</span>
-        <span class="bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent"
-          >LoseAMax</span
-        >
+        <img :src="logoUrl" alt="LoseAMax logo" class="mr-2 h-12 w-auto object-contain" />
       </NuxtLink>
     </div>
 
@@ -79,6 +76,7 @@
 <script setup lang="ts">
 const supabase = useSupabaseClient()
 const { userData } = useUserData()
+import logoUrl from '../assets/img/logo.png'
 
 const handleLogout = async () => {
   await supabase.auth.signOut()
