@@ -25,6 +25,7 @@
           <li><NuxtLink to="/">Accueil</NuxtLink></li>
           <li><NuxtLink to="/groups">Mes Groupes</NuxtLink></li>
           <li><NuxtLink to="/public-bets">Paris Publics</NuxtLink></li>
+          <li><NuxtLink to="/leaderboard" class="text-yellow-600">🏆 Classement</NuxtLink></li>
           <li><NuxtLink to="/groups/create">Créer un Groupe</NuxtLink></li>
           <li><NuxtLink to="/admin" class="text-red-500">👑 Admin</NuxtLink></li>
         </ul>
@@ -39,6 +40,7 @@
         <li><NuxtLink to="/">Accueil</NuxtLink></li>
         <li><NuxtLink to="/groups">Mes Groupes</NuxtLink></li>
         <li><NuxtLink to="/public-bets">Paris Publics</NuxtLink></li>
+        <li><NuxtLink to="/leaderboard" class="text-yellow-600">🏆 Classement</NuxtLink></li>
         <li><NuxtLink to="/groups/create">Créer un Groupe</NuxtLink></li>
         <li><NuxtLink to="/admin" class="text-red-500">👑 Admin</NuxtLink></li>
       </ul>
