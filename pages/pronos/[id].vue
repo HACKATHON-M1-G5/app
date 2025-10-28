@@ -28,6 +28,12 @@
               </div>
 
               <div class="text-sm opacity-70 space-y-1">
+                <p v-if="prono.event_id" class="text-primary font-semibold">
+                  🔗 Basé sur l'événement API #{{ prono.event_id }}
+                </p>
+                <p v-if="externalEvent" class="text-info">
+                  📊 {{ externalEvent.name }}
+                </p>
                 <p>📅 Début : {{ formatDate(prono.start_at) }}</p>
                 <p>🏁 Fin : {{ formatDate(prono.end_at) }}</p>
                 <p>👤 Créé par : {{ prono.owner?.username }}</p>
@@ -176,6 +182,7 @@
 
 <script setup lang="ts">
 import type { PronoWithBets, BetUserData } from '~/types/database'
+import type { ExternalEvent } from '~/composables/useExternalApi'
 
 definePageMeta({
   middleware: 'auth',
@@ -190,6 +197,7 @@ const { setResultAndDistribute } = useResults()
 const { userData } = useUserData()
 const { getUserTeamTokens, isTeamMember } = useTeams()
 const { subscribeToPronoBets, unsubscribeAll } = useRealtime()
+const { getEvent } = useExternalEvents()
 
 const prono = ref<PronoWithBets | null>(null)
 const userBets = ref<BetUserData[]>([])
@@ -198,6 +206,7 @@ const loading = ref(true)
 const availableTokens = ref<number | null>(null)
 const betRefs = ref<Record<string, any>>({})
 const isMember = ref(true) // true by default for public bets
+const externalEvent = ref<ExternalEvent | null>(null)
 
 const isOwner = computed(() => {
   return userData.value && prono.value && userData.value.id === prono.value.owner_id
@@ -229,6 +238,7 @@ onMounted(async () => {
   await loadUserBets()
   await loadBetStats()
   await loadAvailableTokens()
+  await loadExternalEvent()
 
   // 📡 S'abonner aux changements en temps réel
   subscribeToPronoBets(pronoId, async () => {
@@ -254,6 +264,16 @@ const loadPronoData = async () => {
     console.error('Error loading prono:', e)
   } finally {
     loading.value = false
+  }
+}
+
+const loadExternalEvent = async () => {
+  if (!prono.value?.event_id) return
+
+  try {
+    externalEvent.value = await getEvent(prono.value.event_id)
+  } catch (e) {
+    console.error('Error loading external event:', e)
   }
 }
 

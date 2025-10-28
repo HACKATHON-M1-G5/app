@@ -10,6 +10,7 @@
       </h2>
 
       <div class="text-sm opacity-70 space-y-1">
+        <p v-if="prono.event_id" class="text-primary font-semibold">🔗 Événement API: #{{ prono.event_id }}</p>
         <p>📅 Début : {{ formatDate(prono.start_at) }}</p>
         <p>🏁 Fin : {{ formatDate(prono.end_at) }}</p>
         <p v-if="prono.owner">👤 Créé par : {{ prono.owner.username }}</p>

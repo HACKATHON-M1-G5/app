@@ -60,6 +60,40 @@
               </div>
             </div>
             
+            <div class="divider mt-6">Événement & Options proposées</div>
+
+            <!-- Autocomplete événement -->
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">Rechercher un événement (API externe)</span>
+              </label>
+              <input
+                v-model="eventQuery"
+                type="text"
+                placeholder="Ex: PSG vs OM"
+                class="input input-bordered"
+                @input="handleEventSearch"
+              />
+              <div v-if="eventLoading" class="text-xs mt-1">Recherche...</div>
+              <div v-if="eventOptions.length" class="mt-2">
+                <select v-model.number="selectedEventId" class="select select-bordered w-full">
+                  <option disabled :value="null">Sélectionner un événement</option>
+                  <option v-for="ev in eventOptions" :key="ev.id" :value="ev.id">
+                    {{ ev.name }}
+                  </option>
+                </select>
+                <div class="mt-2">
+                  <button type="button" class="btn btn-outline btn-sm" @click="importOptionsFromEvent" :disabled="!selectedEventId || importLoading">
+                    <span v-if="importLoading" class="loading loading-spinner"></span>
+                    📥 Importer l'événement (nom, dates et options)
+                  </button>
+                </div>
+              </div>
+              <label class="label">
+                <span class="label-text-alt">L'import remplira automatiquement le nom, les dates et les options de pari</span>
+              </label>
+            </div>
+
             <div class="divider mt-6">Options de pari (cotes)</div>
             
             <!-- Liste des options -->
@@ -200,6 +234,86 @@ const formData = ref({
   ]
 })
 
+// External events search/import
+const { searchEvents, getEventOptions, getEvent } = useExternalEvents()
+const eventQuery = ref('')
+const eventOptions = ref<Array<{ id: number; name: string }>>([])
+const selectedEventId = ref<number | null>(null)
+const eventLoading = ref(false)
+const importLoading = ref(false)
+
+let eventSearchTimeout: any
+const handleEventSearch = () => {
+  if (eventSearchTimeout) clearTimeout(eventSearchTimeout)
+  eventLoading.value = true
+  eventSearchTimeout = setTimeout(async () => {
+    try {
+      const results = eventQuery.value ? await searchEvents(eventQuery.value) : []
+      eventOptions.value = results
+    } catch (e: any) {
+      error.value = e.message || 'Erreur lors de la recherche des événements'
+    } finally {
+      eventLoading.value = false
+    }
+  }, 300)
+}
+
+const importOptionsFromEvent = async () => {
+  if (!selectedEventId.value) return
+  importLoading.value = true
+  error.value = ''
+  success.value = ''
+  try {
+    // Récupérer l'événement pour avoir ses informations complètes
+    const event = await getEvent(selectedEventId.value)
+    
+    let importedItems: string[] = []
+    
+    // Appliquer le nom de l'événement au prono
+    if (event.name) {
+      formData.value.name = event.name
+      importedItems.push('nom')
+    }
+    
+    // Appliquer les dates de l'événement
+    if (event.start_at) {
+      const startDate = new Date(event.start_at)
+      formData.value.start_at = formatDateTimeLocal(startDate)
+      importedItems.push('date de début')
+    }
+    
+    if (event.end_at_expected) {
+      const endDate = new Date(event.end_at_expected)
+      formData.value.end_at = formatDateTimeLocal(endDate)
+      importedItems.push('date de fin')
+    }
+    
+    // Récupérer les options de pari
+    const options = await getEventOptions(selectedEventId.value)
+    if (options && options.length) {
+      formData.value.bets = options.map((opt: any) => ({ 
+        title: opt.name || opt.label || opt.description || '', 
+        odds: 2.0 
+      }))
+      importedItems.push(`${options.length} option(s)`)
+    } else {
+      error.value = "Aucune option disponible pour cet événement (vous pouvez les créer manuellement)"
+    }
+    
+    if (importedItems.length > 0) {
+      success.value = `✅ Importé avec succès : ${importedItems.join(', ')}`
+      // Effacer le message de succès après 3 secondes
+      setTimeout(() => {
+        success.value = ''
+      }, 3000)
+    }
+  } catch (e: any) {
+    error.value = e.message || "Erreur lors de l'import des données de l'événement"
+  } finally {
+    importLoading.value = false
+  }
+}
+
 const loading = ref(false)
 const error = ref('')
 const success = ref('')
@@ -241,6 +355,7 @@ const handleCreateProno = async () => {
       start_at: new Date(formData.value.start_at).toISOString(),
       end_at: new Date(formData.value.end_at).toISOString(),
       team_id: null, // Pari public
+      event_id: selectedEventId.value ? String(selectedEventId.value) : null,
       bets: formData.value.bets
     })
     
