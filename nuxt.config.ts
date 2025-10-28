@@ -47,6 +47,21 @@ export default defineNuxtConfig({
     typeCheck: false,
   },
 
+  // Add app head so we can set the favicon to the logo asset (Vite resolves the URL)
+  app: {
+    head: {
+      title: 'LoseAMax',
+      link: [
+        {
+          rel: 'icon',
+          type: 'image/png',
+          // Use Vite import resolution so the asset path is correct in dev and production
+          href: '_nuxt/assets/favicon.ico'
+        },
+      ],
+    },
+  },
+
   nitro: {
     experimental: {
       websocket: true,
