@@ -181,6 +181,11 @@ const removeBet = (index: number) => {
 
 const handleCreateProno = async () => {
   // Validation
+  if (!formData.value.name.trim()) {
+    error.value = 'Le nom du pari est requis'
+    return
+  }
+
   if (new Date(formData.value.start_at) >= new Date(formData.value.end_at)) {
     error.value = 'La date de fin doit être après la date de début'
     return
@@ -191,10 +196,19 @@ const handleCreateProno = async () => {
     return
   }
 
+  // Vérifier que toutes les cotes sont valides
+  const invalidBets = formData.value.bets.some((b) => !b.title.trim() || b.odds < 1.01)
+  if (invalidBets) {
+    error.value = 'Toutes les options doivent avoir un titre et une cote >= 1.01'
+    return
+  }
+
   loading.value = true
   error.value = ''
 
   try {
+    console.log('🎯 Création du prono pour le groupe', teamId)
+    
     const prono = await createProno({
       name: formData.value.name,
       start_at: new Date(formData.value.start_at).toISOString(),
@@ -203,8 +217,12 @@ const handleCreateProno = async () => {
       bets: formData.value.bets,
     })
 
-    await navigateTo(`/pronos/${prono.id}`)
+    console.log('✅ Prono créé avec succès:', prono.id)
+    
+    // Rediriger vers la page du groupe
+    await navigateTo(`/groups/${teamId}`)
   } catch (e: any) {
+    console.error('❌ Erreur lors de la création du pari:', e)
     error.value = e.message || 'Erreur lors de la création du pari'
   } finally {
     loading.value = false

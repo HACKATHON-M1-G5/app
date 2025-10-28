@@ -93,6 +93,19 @@
       <div class="mb-8">
         <h2 class="text-2xl font-bold mb-4">Options de Pari</h2>
 
+        <div v-if="prono.team && !isMember" class="alert alert-error mb-4">
+          <div>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <div>
+              <span class="font-bold">Vous n'êtes pas membre de ce groupe</span>
+              <p class="text-sm">Vous devez être membre du groupe "{{ prono.team.name }}" pour parier sur ce prono.</p>
+              <NuxtLink :to="`/groups/${prono.team_id}`" class="btn btn-sm btn-primary mt-2">
+                Rejoindre le groupe
+              </NuxtLink>
+            </div>
+          </div>
+        </div>
+
         <div v-if="!isActive && !isPending" class="alert alert-warning mb-4">
           <span>Ce pari est terminé, vous ne pouvez plus parier.</span>
         </div>
@@ -110,7 +123,7 @@
             :key="bet.id" 
             :ref="(el: any) => betRefs[bet.id] = el"
             :bet="bet"
-            :can-bet="(isActive || isPending) && !hasResults && availableTokens !== null && availableTokens > 0"
+            :can-bet="isMember && (isActive || isPending) && !hasResults && availableTokens !== null && availableTokens > 0"
             :max-amount="availableTokens || 0"
             :stats="betStats[bet.id]"
             @place-bet="(amount: number) => handlePlaceBet(bet.id, amount)"
@@ -175,7 +188,8 @@ const { getPronoById } = usePronos()
 const { placeBet, getUserBetsByProno, getBetStats, calculatePotentialWin, deleteBet } = useBets()
 const { setResultAndDistribute } = useResults()
 const { userData } = useUserData()
-const { getUserTeamTokens } = useTeams()
+const { getUserTeamTokens, isTeamMember } = useTeams()
+const { subscribeToPronoBets, unsubscribeAll } = useRealtime()
 
 const prono = ref<PronoWithBets | null>(null)
 const userBets = ref<BetUserData[]>([])
@@ -183,6 +197,7 @@ const betStats = ref<Record<string, { totalAmount: number; betCount: number }>>(
 const loading = ref(true)
 const availableTokens = ref<number | null>(null)
 const betRefs = ref<Record<string, any>>({})
+const isMember = ref(true) // true by default for public bets
 
 const isOwner = computed(() => {
   return userData.value && prono.value && userData.value.id === prono.value.owner_id
@@ -214,6 +229,20 @@ onMounted(async () => {
   await loadUserBets()
   await loadBetStats()
   await loadAvailableTokens()
+
+  // 📡 S'abonner aux changements en temps réel
+  subscribeToPronoBets(pronoId, async () => {
+    console.log('🔄 Mise à jour temps réel du prono')
+    await loadPronoData()
+    await loadUserBets()
+    await loadBetStats()
+    await loadAvailableTokens()
+  })
+})
+
+onUnmounted(() => {
+  // 🔌 Se désabonner quand on quitte la page
+  unsubscribeAll()
 })
 
 const loadPronoData = async () => {
@@ -252,8 +281,16 @@ const loadAvailableTokens = async () => {
   if (!userData.value || !prono.value) return
 
   if (prono.value.team_id) {
-    availableTokens.value = await getUserTeamTokens(prono.value.team_id)
+    // Check if user is member of the group
+    isMember.value = await isTeamMember(prono.value.team_id)
+    if (isMember.value) {
+      availableTokens.value = await getUserTeamTokens(prono.value.team_id)
+    } else {
+      availableTokens.value = 0
+    }
   } else {
+    // Public bet - everyone can bet
+    isMember.value = true
     availableTokens.value = userData.value.tokens
   }
 }

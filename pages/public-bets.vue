@@ -24,12 +24,24 @@ definePageMeta({
 })
 
 const { getPublicPronos } = usePronos()
+const { subscribeToPublicPronos, unsubscribeAll } = useRealtime()
 
 const pronos = ref<PronoWithBets[]>([])
 const loading = ref(true)
 
 onMounted(async () => {
   await loadPronos()
+
+  // 📡 S'abonner aux changements en temps réel
+  subscribeToPublicPronos(async () => {
+    console.log('🔄 Mise à jour temps réel des paris publics')
+    await loadPronos()
+  })
+})
+
+onUnmounted(() => {
+  // 🔌 Se désabonner quand on quitte la page
+  unsubscribeAll()
 })
 
 const loadPronos = async () => {

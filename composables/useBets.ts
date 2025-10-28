@@ -17,8 +17,23 @@ export const useBets = () => {
     let availableTokens = 0
 
     if (teamId) {
-      // Group bet - use team tokens
-      availableTokens = await getUserTeamTokens(teamId)
+      // Group bet - verify membership first
+      const { data: membershipData, error: membershipError } = await supabase
+        .from('team_userdata')
+        .select('token, status')
+        .eq('team_id', teamId)
+        .eq('userdata_id', userData.value.id)
+        .single()
+
+      if (membershipError || !membershipData) {
+        throw new Error('Vous devez être membre de ce groupe pour parier')
+      }
+
+      if (membershipData.status !== 'member' && membershipData.status !== 'owner') {
+        throw new Error('Vous devez être un membre actif de ce groupe pour parier')
+      }
+
+      availableTokens = membershipData.token
     } else {
       // Public bet - use global tokens
       availableTokens = userData.value.tokens
@@ -194,10 +209,22 @@ export const useBets = () => {
 
     // Refund tokens
     if (teamId) {
-      const currentTokens = await getUserTeamTokens(teamId)
+      // Get current tokens for group
+      const { data: membershipData, error: fetchError } = await supabase
+        .from('team_userdata')
+        .select('token, status')
+        .eq('team_id', teamId)
+        .eq('userdata_id', userData.value.id)
+        .single()
+
+      if (fetchError || !membershipData) {
+        throw new Error('Impossible de récupérer les informations du groupe')
+      }
+
+      // Refund to group tokens
       const { error: refundError } = await supabase
         .from('team_userdata')
-        .update({ token: currentTokens + betData.amount })
+        .update({ token: membershipData.token + betData.amount })
         .eq('team_id', teamId)
         .eq('userdata_id', userData.value.id)
 

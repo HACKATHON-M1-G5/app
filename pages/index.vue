@@ -267,6 +267,7 @@ const { userData } = useUserData()
 const { getMyTeams } = useTeams()
 const { getPublicPronos } = usePronos()
 const { getUserActiveBets } = useBets()
+const { subscribeToPublicPronos, subscribeToTeams, subscribe, unsubscribeAll } = useRealtime()
 
 const myTeams = ref<Team[]>([])
 const publicPronos = ref<PronoWithBets[]>([])
@@ -300,8 +301,33 @@ watch(
   async (newUser) => {
     if (newUser) {
       await loadDashboardData()
+
+      // 📡 S'abonner aux changements en temps réel
+      subscribeToPublicPronos(async () => {
+        console.log('🔄 Mise à jour temps réel des paris publics (accueil)')
+        const pronos = await getPublicPronos()
+        publicPronos.value = pronos
+      })
+
+      subscribeToTeams(async () => {
+        console.log('🔄 Mise à jour temps réel des groupes (accueil)')
+        const teams = await getMyTeams()
+        myTeams.value = teams
+      })
+
+      // S'abonner aux paris utilisateurs (bet_userdata)
+      subscribe('bet_userdata', async () => {
+        console.log('🔄 Mise à jour temps réel des paris actifs (accueil)')
+        const bets = await getUserActiveBets()
+        activeBets.value = bets
+      })
     }
   },
   { immediate: true }
 )
+
+onUnmounted(() => {
+  // 🔌 Se désabonner quand on quitte la page
+  unsubscribeAll()
+})
 </script>
