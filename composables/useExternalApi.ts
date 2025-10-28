@@ -22,15 +22,29 @@ export const useExternalApi = () => {
   return { request }
 }
 
-export type ExternalEvent = {
-  id: string
+export type ExternalCategory = {
+  id: number
   name: string
-  starts_at?: string
+  description: string
+  created_at: string
+  updated_at: string
+}
+
+export type ExternalEvent = {
+  id: number
+  name: string
+  start_at: string
+  end_at_expected: string
+  end_at_actual: string | null
+  status: 'pending' | 'ongoing' | 'completed' | 'cancelled'
+  score: number | null
+  category: number
 }
 
 export type ExternalOption = {
-  id: string
-  label: string
+  id: number
+  name: string
+  description?: string
 }
 
 

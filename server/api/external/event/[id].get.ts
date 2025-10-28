@@ -1,5 +1,6 @@
-export default defineEventHandler(async () => {
-  const url = 'https://api-django-external.onrender.com/api/event/event/'
+export default defineEventHandler(async (event) => {
+  const id = getRouterParam(event, 'id')
+  const url = `https://api-django-external.onrender.com/api/event/event/${id}/`
   const res = await fetch(url, { method: 'GET' })
   if (!res.ok) {
     const text = await res.text().catch(() => 'Upstream error')
@@ -8,5 +9,4 @@ export default defineEventHandler(async () => {
   const data = await res.json()
   return data
 })
-
 
