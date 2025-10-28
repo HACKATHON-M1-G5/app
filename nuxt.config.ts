@@ -54,9 +54,9 @@ export default defineNuxtConfig({
       link: [
         {
           rel: 'icon',
-          type: 'image/png',
+          type: 'image/x-icon',
           // Use Vite import resolution so the asset path is correct in dev and production
-          href: '_nuxt/assets/favicon.ico'
+          href: '/favicon.ico'
         },
       ],
     },

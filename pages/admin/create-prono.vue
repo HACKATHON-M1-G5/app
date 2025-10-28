@@ -60,6 +60,40 @@
               </div>
             </div>
             
+            <div class="divider mt-6">Événement & Options proposées</div>
+
+            <!-- Autocomplete événement -->
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text">Rechercher un événement (API externe)</span>
+              </label>
+              <input
+                v-model="eventQuery"
+                type="text"
+                placeholder="Ex: PSG vs OM"
+                class="input input-bordered"
+                @input="handleEventSearch"
+              />
+              <div v-if="eventLoading" class="text-xs mt-1">Recherche...</div>
+              <div v-if="eventOptions.length" class="mt-2">
+                <select v-model="selectedEventId" class="select select-bordered w-full">
+                  <option disabled value="">Sélectionner un événement</option>
+                  <option v-for="ev in eventOptions" :key="ev.id" :value="ev.id">
+                    {{ ev.name }}
+                  </option>
+                </select>
+                <div class="mt-2">
+                  <button type="button" class="btn btn-outline btn-sm" @click="importOptionsFromEvent" :disabled="!selectedEventId || importLoading">
+                    <span v-if="importLoading" class="loading loading-spinner"></span>
+                    Importer les options depuis l'événement
+                  </button>
+                </div>
+              </div>
+              <label class="label">
+                <span class="label-text-alt">Les options importées peuvent être ajustées ci-dessous (titres/cotes)</span>
+              </label>
+            </div>
+
             <div class="divider mt-6">Options de pari (cotes)</div>
             
             <!-- Liste des options -->
@@ -200,6 +234,45 @@ const formData = ref({
   ]
 })
 
+// External events search/import
+const { searchEvents, getEventOptions } = useExternalEvents()
+const eventQuery = ref('')
+const eventOptions = ref<Array<{ id: string; name: string }>>([])
+const selectedEventId = ref('')
+const eventLoading = ref(false)
+const importLoading = ref(false)
+
+let eventSearchTimeout: any
+const handleEventSearch = () => {
+  if (eventSearchTimeout) clearTimeout(eventSearchTimeout)
+  eventLoading.value = true
+  eventSearchTimeout = setTimeout(async () => {
+    try {
+      const results = eventQuery.value ? await searchEvents(eventQuery.value) : []
+      eventOptions.value = results
+    } catch (e: any) {
+      error.value = e.message || 'Erreur lors de la recherche des événements'
+    } finally {
+      eventLoading.value = false
+    }
+  }, 300)
+}
+
+const importOptionsFromEvent = async () => {
+  if (!selectedEventId.value) return
+  importLoading.value = true
+  try {
+    const options = await getEventOptions(selectedEventId.value)
+    if (options && options.length) {
+      formData.value.bets = options.map((opt: any) => ({ title: opt.label || opt.name || '', odds: 2.0 }))
+    }
+  } catch (e: any) {
+    error.value = e.message || "Erreur lors de l'import des options"
+  } finally {
+    importLoading.value = false
+  }
+}
+
 const loading = ref(false)
 const error = ref('')
 const success = ref('')
@@ -241,6 +314,7 @@ const handleCreateProno = async () => {
       start_at: new Date(formData.value.start_at).toISOString(),
       end_at: new Date(formData.value.end_at).toISOString(),
       team_id: null, // Pari public
+      event_id: selectedEventId.value || null,
       bets: formData.value.bets
     })
     
