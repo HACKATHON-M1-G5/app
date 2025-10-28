@@ -158,6 +158,7 @@ import type { Team } from '~/types/database'
 definePageMeta({ middleware: 'auth' })
 
 const { getMyTeams, getPublicTeams, joinTeam, getTeamByJoinCode } = useTeams()
+const { subscribeToTeams, unsubscribeAll } = useRealtime()
 
 const activeTab = ref<'mine' | 'public'>('mine')
 
@@ -186,6 +187,17 @@ const filteredPublic = computed(() => {
 
 onMounted(async () => {
   await Promise.all([reloadMine(), reloadPublic()])
+
+  // 📡 S'abonner aux changements en temps réel des groupes
+  subscribeToTeams(async () => {
+    console.log('🔄 Mise à jour temps réel des groupes')
+    await Promise.all([reloadMine(), reloadPublic()])
+  })
+})
+
+onUnmounted(() => {
+  // 🔌 Se désabonner quand on quitte la page
+  unsubscribeAll()
 })
 
 async function reloadMine() {

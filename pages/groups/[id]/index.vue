@@ -386,6 +386,7 @@ const { getTeamById, getTeamMembers, joinTeam, leaveTeam, isTeamOwner, updateMem
   useTeams()
 const { getTeamPronos } = usePronos()
 const { userData } = useUserData()
+const { subscribeToTeamPronos, subscribeToTeamMembers, unsubscribeAll } = useRealtime()
 
 const team = ref<Team | null>(null)
 const members = ref<(TeamUserData & { userdata: any })[]>([])
@@ -417,6 +418,22 @@ const rankedMembers = computed(() => {
 onMounted(async () => {
   await loadTeamData()
   await loadPronos()
+
+  // 📡 S'abonner aux changements en temps réel
+  subscribeToTeamMembers(teamId, async () => {
+    console.log('🔄 Mise à jour temps réel des membres')
+    await loadTeamData()
+  })
+
+  subscribeToTeamPronos(teamId, async () => {
+    console.log('🔄 Mise à jour temps réel des pronos')
+    await loadPronos()
+  })
+})
+
+onUnmounted(() => {
+  // 🔌 Se désabonner quand on quitte la page
+  unsubscribeAll()
 })
 
 const loadTeamData = async () => {

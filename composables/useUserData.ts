@@ -7,6 +7,7 @@ export const useUserData = () => {
   const userData = useState<UserData | null>('userData', () => null)
   const loading = useState<boolean>('userDataLoading', () => false)
   const errorMsg = useState<string | null>('userDataError', () => null)
+  const realtimeInitialized = useState<boolean>('userDataRealtimeInit', () => false)
 
   const fetchUserData = async () => {
     if (!user.value) {
@@ -56,11 +57,44 @@ export const useUserData = () => {
     await fetchUserData()
   }
 
+  // 📡 Initialiser le realtime une seule fois
+  const initRealtime = () => {
+    if (realtimeInitialized.value || !userData.value) return
+
+    console.log('📡 Initialisation du realtime pour UserData:', userData.value.id)
+
+    const channel = supabase
+      .channel(`userdata:${userData.value.id}`)
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'UserDatas',
+          filter: `id=eq.${userData.value.id}`,
+        },
+        (payload) => {
+          console.log('🔔 Mise à jour temps réel UserData:', payload)
+          if (payload.eventType === 'UPDATE' && payload.new) {
+            userData.value = payload.new as UserData
+          }
+        }
+      )
+      .subscribe()
+
+    realtimeInitialized.value = true
+  }
+
   watch(
       user,
       async (newUser) => {
-        if (newUser) await fetchUserData()
-        else userData.value = null
+        if (newUser) {
+          await fetchUserData()
+          // Initialiser le realtime après le chargement initial
+          initRealtime()
+        } else {
+          userData.value = null
+        }
       },
       { immediate: true },
   )

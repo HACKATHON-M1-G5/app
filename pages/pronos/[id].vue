@@ -189,6 +189,7 @@ const { placeBet, getUserBetsByProno, getBetStats, calculatePotentialWin, delete
 const { setResultAndDistribute } = useResults()
 const { userData } = useUserData()
 const { getUserTeamTokens, isTeamMember } = useTeams()
+const { subscribeToPronoBets, unsubscribeAll } = useRealtime()
 
 const prono = ref<PronoWithBets | null>(null)
 const userBets = ref<BetUserData[]>([])
@@ -228,6 +229,20 @@ onMounted(async () => {
   await loadUserBets()
   await loadBetStats()
   await loadAvailableTokens()
+
+  // 📡 S'abonner aux changements en temps réel
+  subscribeToPronoBets(pronoId, async () => {
+    console.log('🔄 Mise à jour temps réel du prono')
+    await loadPronoData()
+    await loadUserBets()
+    await loadBetStats()
+    await loadAvailableTokens()
+  })
+})
+
+onUnmounted(() => {
+  // 🔌 Se désabonner quand on quitte la page
+  unsubscribeAll()
 })
 
 const loadPronoData = async () => {
