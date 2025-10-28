@@ -108,9 +108,48 @@
         <div v-else-if="pronos.length === 0" class="alert alert-info">
           <span>Aucun pari pour ce groupe. {{ isOwner ? 'Créez-en un !' : '' }}</span>
         </div>
-
-        <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <PronoCard v-for="prono in pronos" :key="prono.id" :prono="prono" />
+        
+        <div v-else class="grid grid-cols-1 gap-4">
+          <div 
+            v-for="prono in pronos" 
+            :key="prono.id"
+            class="card bg-base-100 shadow-xl border border-red-900/30 hover:border-red-600/50"
+          >
+            <div class="card-body">
+              <div class="flex justify-between items-start">
+                <div class="flex-1">
+                  <h3 class="card-title text-xl mb-2">
+                    {{ prono.name }}
+                    <div v-if="isPronoActive(prono)" class="badge badge-success">En cours</div>
+                    <div v-else-if="isPronoPending(prono)" class="badge badge-warning">À venir</div>
+                    <div v-else class="badge badge-error">Terminé</div>
+                  </h3>
+                  
+                  <div class="text-sm space-y-1 opacity-70">
+                    <p>📅 Début : {{ formatDate(prono.start_at) }}</p>
+                    <p>🏁 Fin : {{ formatDate(prono.end_at) }}</p>
+                    <p>🎯 Options : {{ prono.bets?.length || 0 }}</p>
+                  </div>
+                </div>
+                
+                <div class="flex gap-2">
+                  <NuxtLink 
+                    :to="`/pronos/${prono.id}`" 
+                    class="btn btn-ghost btn-sm"
+                  >
+                    👁️ Voir
+                  </NuxtLink>
+                  <NuxtLink 
+                    v-if="isOwner && !isPronoActive(prono) && !isPronoPending(prono)"
+                    :to="`/groups/${team.id}/results/${prono.id}`" 
+                    class="btn btn-success btn-sm"
+                  >
+                    🏆 Résultats
+                  </NuxtLink>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -307,5 +346,29 @@ const statusLabel = (status: string) => {
     banned: '🚫 Banni',
   }
   return labels[status] || status
+}
+
+const isPronoPending = (prono: PronoWithBets) => {
+  const now = new Date()
+  const start = new Date(prono.start_at)
+  return now < start
+}
+
+const isPronoActive = (prono: PronoWithBets) => {
+  const now = new Date()
+  const start = new Date(prono.start_at)
+  const end = new Date(prono.end_at)
+  return now >= start && now <= end
+}
+
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString)
+  return date.toLocaleDateString('fr-FR', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  })
 }
 </script>
