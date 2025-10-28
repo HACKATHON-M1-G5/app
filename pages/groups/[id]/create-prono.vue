@@ -1,9 +1,16 @@
 <template>
   <div class="container mx-auto px-4 py-8">
     <div class="max-w-2xl mx-auto">
-      <h1 class="text-3xl font-bold mb-8">Créer un Pari</h1>
+      <div class="flex items-center gap-4 mb-8">
+        <NuxtLink :to="`/groups/${teamId}`" class="btn btn-ghost btn-circle">
+          ← 
+        </NuxtLink>
+        <h1 class="text-3xl font-bold bg-gradient-to-r from-red-600 to-red-500 bg-clip-text text-transparent">
+          Créer un Pari pour le Groupe
+        </h1>
+      </div>
       
-      <div class="card bg-base-100 shadow-xl">
+      <div class="card bg-base-100 shadow-xl border border-red-900/30">
         <div class="card-body">
           <form @submit.prevent="handleCreateProno">
             <div class="form-control">
@@ -51,11 +58,11 @@
             <div 
               v-for="(bet, index) in formData.bets" 
               :key="index"
-              class="card bg-base-200 mb-4"
+              class="card bg-base-200 mb-4 border border-red-900/20"
             >
               <div class="card-body p-4">
                 <div class="flex justify-between items-start mb-2">
-                  <h3 class="font-bold">Option {{ index + 1 }}</h3>
+                  <h3 class="font-bold text-red-500">Option {{ index + 1 }}</h3>
                   <button 
                     v-if="formData.bets.length > 1"
                     type="button"
@@ -81,17 +88,22 @@
                 
                 <div class="form-control mt-2">
                   <label class="label">
-                    <span class="label-text">Cote * (ex: 2.5)</span>
+                    <span class="label-text">Cote * (multiplicateur de gain)</span>
                   </label>
                   <input 
                     v-model.number="bet.odds" 
                     type="number" 
-                    step="0.1"
+                    step="0.01"
                     min="1.01"
                     placeholder="2.5" 
                     class="input input-bordered input-sm" 
                     required
                   />
+                  <label class="label">
+                    <span class="label-text-alt">
+                      {{ bet.odds || 1 }}x : 100 tokens misés = {{ Math.floor((bet.odds || 1) * 100) }} tokens gagnés
+                    </span>
+                  </label>
                 </div>
               </div>
             </div>
@@ -138,10 +150,24 @@ const teamId = route.params.id as string
 
 const { createProno } = usePronos()
 
+// Formater la date pour datetime-local (format: YYYY-MM-DDTHH:mm)
+const formatDateTimeLocal = (date: Date) => {
+  const year = date.getFullYear()
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  const hours = String(date.getHours()).padStart(2, '0')
+  const minutes = String(date.getMinutes()).padStart(2, '0')
+  return `${year}-${month}-${day}T${hours}:${minutes}`
+}
+
+// Initialiser les dates avec l'heure actuelle
+const now = new Date()
+const inOneHour = new Date(now.getTime() + 60 * 60 * 1000) // +1 heure pour la fin
+
 const formData = ref({
   name: '',
-  start_at: '',
-  end_at: '',
+  start_at: formatDateTimeLocal(now),
+  end_at: formatDateTimeLocal(inOneHour),
   bets: [
     { title: '', odds: 2.0 },
     { title: '', odds: 2.0 }

@@ -1,5 +1,5 @@
 <template>
-  <div class="card bg-base-100 border-2 border-base-300 hover:border-primary transition-colors">
+  <div class="card bg-base-100 shadow-xl border-2 border-red-900/30 hover:border-red-600/70 transition-all hover:shadow-2xl hover:shadow-red-900/20">
     <div class="card-body p-4">
       <div class="flex justify-between items-start">
         <div class="flex-1">

@@ -6,6 +6,7 @@
         <div v-if="isActive" class="badge badge-success">En cours</div>
         <div v-else-if="isPending" class="badge badge-warning">À venir</div>
         <div v-else class="badge badge-error">Terminé</div>
+        <div v-if="hasResults" class="badge badge-neutral">🔒 Résultats</div>
       </h2>
       
       <div class="text-sm opacity-70 space-y-1">
@@ -46,6 +47,7 @@ const endDate = new Date(props.prono.end_at)
 
 const isPending = computed(() => now < startDate)
 const isActive = computed(() => now >= startDate && now <= endDate)
+const hasResults = computed(() => props.prono.bets?.some(bet => bet.result !== null) || false)
 
 const formatDate = (dateString: string) => {
   const date = new Date(dateString)

@@ -6,7 +6,7 @@
     
     <div v-else-if="prono">
       <!-- En-tête du prono -->
-      <div class="card bg-base-100 shadow-xl mb-8">
+      <div class="card bg-base-100 shadow-xl border border-red-900/30 mb-8">
         <div class="card-body">
           <div class="flex justify-between items-start">
             <div>
@@ -16,6 +16,10 @@
                 <div v-if="isActive" class="badge badge-success badge-lg">En cours</div>
                 <div v-else-if="isPending" class="badge badge-warning badge-lg">À venir</div>
                 <div v-else class="badge badge-error badge-lg">Terminé</div>
+                
+                <div v-if="hasResults" class="badge badge-neutral badge-lg">
+                  🔒 Résultats définis
+                </div>
                 
                 <div v-if="prono.team" class="badge badge-primary badge-lg">
                   🏆 {{ prono.team.name }}
@@ -39,7 +43,7 @@
       </div>
 
       <!-- Mes paris sur ce prono -->
-      <div v-if="userBets.length > 0" class="card bg-base-100 shadow-xl mb-8">
+      <div v-if="userBets.length > 0" class="card bg-base-100 shadow-xl border border-red-900/30 mb-8">
         <div class="card-body">
           <h2 class="card-title">Mes Paris</h2>
           
@@ -88,18 +92,25 @@
           <span>Ce pari est terminé, vous ne pouvez plus parier.</span>
         </div>
         
+        <div v-if="hasResults" class="alert alert-info mb-4">
+          <div>
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current shrink-0 w-6 h-6"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <span>🔒 Les résultats ont été définis. Les paris sont fermés et les gains ont été distribués.</span>
+          </div>
+        </div>
+        
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <BetOption 
             v-for="bet in prono.bets" 
             :key="bet.id" 
-            :ref="(el) => betRefs[bet.id] = el"
+            :ref="(el: any) => betRefs[bet.id] = el"
             :bet="bet"
-            :can-bet="(isActive || isPending) && availableTokens !== null && availableTokens > 0"
+            :can-bet="(isActive || isPending) && !hasResults && availableTokens !== null && availableTokens > 0"
             :max-amount="availableTokens || 0"
             :stats="betStats[bet.id]"
-            @place-bet="(amount) => handlePlaceBet(bet.id, amount)"
+            @place-bet="(amount: number) => handlePlaceBet(bet.id, amount)"
           >
-            <template v-if="isOwner && !prono.bets.some(b => b.result !== null)" #actions>
+            <template v-if="isOwner && !prono.bets.some((b: any) => b.result !== null)" #actions>
               <div class="divider">Actions propriétaire</div>
               <div class="flex gap-2">
                 <button 
@@ -121,7 +132,7 @@
       </div>
 
       <!-- Statistiques -->
-      <div class="card bg-base-100 shadow-xl">
+      <div class="card bg-base-100 shadow-xl border border-red-900/30">
         <div class="card-body">
           <h2 class="card-title">Statistiques</h2>
           
@@ -158,8 +169,9 @@ definePageMeta({
 const route = useRoute()
 const pronoId = route.params.id as string
 
-const { getPronoById, updateBetResult } = usePronos()
+const { getPronoById } = usePronos()
 const { placeBet, getUserBetsByProno, getBetStats, calculatePotentialWin, deleteBet } = useBets()
+const { setResultAndDistribute } = useResults()
 const { userData } = useUserData()
 const { getUserTeamTokens } = useTeams()
 
@@ -187,6 +199,10 @@ const totalBetsCount = computed(() => {
 
 const totalAmount = computed(() => {
   return Object.values(betStats.value).reduce((sum, stat) => sum + stat.totalAmount, 0)
+})
+
+const hasResults = computed(() => {
+  return prono.value?.bets?.some(bet => bet.result !== null) || false
 })
 
 onMounted(async () => {
@@ -260,11 +276,12 @@ const handlePlaceBet = async (betId: string, amount: number) => {
 }
 
 const handleSetResult = async (betId: string, result: boolean) => {
-  if (!confirm(`Êtes-vous sûr de marquer cette option comme ${result ? 'gagnante' : 'perdante'} ?`)) return
+  if (!confirm(`Êtes-vous sûr de marquer cette option comme ${result ? 'gagnante' : 'perdante'} ? Les tokens seront distribués automatiquement aux gagnants.`)) return
   
   try {
-    await updateBetResult(betId, result)
+    await setResultAndDistribute(betId, result)
     await loadPronoData()
+    await loadBetStats()
   } catch (e: any) {
     alert(e.message || 'Erreur lors de la mise à jour')
   }

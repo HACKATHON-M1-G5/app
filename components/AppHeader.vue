@@ -12,6 +12,7 @@
           <li><NuxtLink to="/groups">Mes Groupes</NuxtLink></li>
           <li><NuxtLink to="/public-bets">Paris Publics</NuxtLink></li>
           <li><NuxtLink to="/groups/create">Créer un Groupe</NuxtLink></li>
+          <li><NuxtLink to="/admin" class="text-red-500">👑 Admin</NuxtLink></li>
         </ul>
       </div>
       <NuxtLink to="/" class="btn btn-ghost normal-case text-xl font-bold tracking-tight">
@@ -26,6 +27,7 @@
         <li><NuxtLink to="/groups">Mes Groupes</NuxtLink></li>
         <li><NuxtLink to="/public-bets">Paris Publics</NuxtLink></li>
         <li><NuxtLink to="/groups/create">Créer un Groupe</NuxtLink></li>
+        <li><NuxtLink to="/admin" class="text-red-500">👑 Admin</NuxtLink></li>
       </ul>
     </div>
     
