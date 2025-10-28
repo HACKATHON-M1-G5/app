@@ -22,12 +22,11 @@
           tabindex="0"
           class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
         >
-          <li><NuxtLink to="/">Accueil</NuxtLink></li>
-          <li><NuxtLink to="/groups">Mes Groupes</NuxtLink></li>
-          <li><NuxtLink to="/public-bets">Paris Publics</NuxtLink></li>
-          <li><NuxtLink to="/leaderboard" class="text-yellow-600">🏆 Classement</NuxtLink></li>
-          <li><NuxtLink to="/groups/create">Créer un Groupe</NuxtLink></li>
-          <li><NuxtLink to="/admin" class="text-red-500">👑 Admin</NuxtLink></li>
+          <li><NuxtLink to="/" class="font-bold">Accueil</NuxtLink></li>
+          <li><NuxtLink to="/groups" class="font-bold">Mes Groupes</NuxtLink></li>
+          <li><NuxtLink to="/public-bets" class="font-bold">Paris Publics</NuxtLink></li>
+          <li><NuxtLink to="/leaderboard" class="text-yellow-600 font-bold">🏆 Classement</NuxtLink></li>
+          <li><NuxtLink to="/admin" class="text-red-500 font-bold">👑 Admin</NuxtLink></li>
         </ul>
       </div>
       <NuxtLink to="/" class="btn btn-ghost normal-case text-xl font-bold tracking-tight">
@@ -37,18 +36,17 @@
 
     <div class="navbar-center hidden lg:flex">
       <ul class="menu menu-horizontal px-1">
-        <li><NuxtLink to="/">Accueil</NuxtLink></li>
-        <li><NuxtLink to="/groups">Mes Groupes</NuxtLink></li>
-        <li><NuxtLink to="/public-bets">Paris Publics</NuxtLink></li>
-        <li><NuxtLink to="/leaderboard" class="text-yellow-600">🏆 Classement</NuxtLink></li>
-        <li><NuxtLink to="/groups/create">Créer un Groupe</NuxtLink></li>
-        <li><NuxtLink to="/admin" class="text-red-500">👑 Admin</NuxtLink></li>
+        <li><NuxtLink to="/" class="font-bold">Accueil</NuxtLink></li>
+        <li><NuxtLink to="/groups" class="font-bold">Mes Groupes</NuxtLink></li>
+        <li><NuxtLink to="/public-bets" class="font-bold">Paris Publics</NuxtLink></li>
+        <li><NuxtLink to="/leaderboard" class="text-yellow-600 font-bold">🏆 Classement</NuxtLink></li>
+        <li><NuxtLink to="/admin" class="text-red-500 font-bold">👑 Admin</NuxtLink></li>
       </ul>
     </div>
 
     <div class="navbar-end gap-2">
       <div v-if="userData" class="flex items-center gap-4">
-        <div class="badge badge-primary badge-lg">💰 {{ userData.tokens }} tokens</div>
+        <div class="badge badge-primary badge-lg">💰 {{ userData.tokens }}</div>
         <div class="dropdown dropdown-end">
           <label tabindex="0" class="btn btn-ghost btn-circle avatar placeholder">
             <div class="bg-neutral-focus text-neutral-content rounded-full w-10">
