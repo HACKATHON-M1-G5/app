@@ -15,7 +15,7 @@ export const useBets = () => {
 
     // Check if user has enough tokens
     let availableTokens = 0
-    
+
     if (teamId) {
       // Group bet - use team tokens
       availableTokens = await getUserTeamTokens(teamId)
@@ -29,14 +29,12 @@ export const useBets = () => {
     }
 
     // Create bet
-    const { error: betError } = await supabase
-      .from('bet_userdata')
-      .insert({
-        bet_id: betId,
-        userdata_id: userData.value.id,
-        amount: amount,
-        created_at: Date.now(),
-      })
+    const { error: betError } = await supabase.from('bet_userdata').insert({
+      bet_id: betId,
+      userdata_id: userData.value.id,
+      amount,
+      created_at: Date.now(),
+    })
 
     if (betError) throw betError
 
@@ -70,7 +68,8 @@ export const useBets = () => {
 
     const { data, error } = await supabase
       .from('bet_userdata')
-      .select(`
+      .select(
+        `
         *,
         bet:Bets (
           *,
@@ -79,7 +78,8 @@ export const useBets = () => {
             team:Teams (*)
           )
         )
-      `)
+      `
+      )
       .eq('userdata_id', userData.value.id)
       .order('created_at', { ascending: false })
 
@@ -93,10 +93,12 @@ export const useBets = () => {
 
     const { data, error } = await supabase
       .from('bet_userdata')
-      .select(`
+      .select(
+        `
         *,
         bet:Bets!inner (*)
-      `)
+      `
+      )
       .eq('userdata_id', userData.value.id)
       .eq('bet.prono_id', pronoId)
 
@@ -106,10 +108,7 @@ export const useBets = () => {
   }
 
   const getBetStats = async (betId: string) => {
-    const { data, error } = await supabase
-      .from('bet_userdata')
-      .select('amount')
-      .eq('bet_id', betId)
+    const { data, error } = await supabase.from('bet_userdata').select('amount').eq('bet_id', betId)
 
     if (error) throw error
 
@@ -129,7 +128,8 @@ export const useBets = () => {
 
     const { data, error } = await supabase
       .from('bet_userdata')
-      .select(`
+      .select(
+        `
         *,
         bet:Bets (
           *,
@@ -138,7 +138,8 @@ export const useBets = () => {
             team:Teams (*)
           )
         )
-      `)
+      `
+      )
       .eq('userdata_id', userData.value.id)
       .lte('bet.prono.start_at', now)
       .gte('bet.prono.end_at', now)
@@ -159,7 +160,8 @@ export const useBets = () => {
     // Get bet details first to refund tokens
     const { data: betData, error: fetchError } = await supabase
       .from('bet_userdata')
-      .select(`
+      .select(
+        `
         *,
         bet:Bets (
           prono:Pronos (
@@ -167,7 +169,8 @@ export const useBets = () => {
             start_at
           )
         )
-      `)
+      `
+      )
       .eq('id', betUserDataId)
       .single()
 
@@ -223,4 +226,3 @@ export const useBets = () => {
     deleteBet,
   }
 }
-

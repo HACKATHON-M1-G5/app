@@ -7,7 +7,7 @@
         <div v-else-if="isPending" class="badge badge-warning">À venir</div>
         <div v-else class="badge badge-error">Terminé</div>
       </h2>
-      
+
       <div class="text-sm opacity-70 space-y-1">
         <p>📅 Début : {{ formatDate(prono.start_at) }}</p>
         <p>🏁 Fin : {{ formatDate(prono.end_at) }}</p>
@@ -15,13 +15,13 @@
         <p v-if="prono.team">🏆 Groupe : {{ prono.team.name }}</p>
         <p v-else>🌍 Paris Public</p>
       </div>
-      
+
       <div v-if="prono.bets && prono.bets.length > 0" class="mt-3">
         <div class="badge badge-outline">
           🎯 {{ prono.bets.length }} option{{ prono.bets.length > 1 ? 's' : '' }} de pari
         </div>
       </div>
-      
+
       <div class="card-actions justify-end mt-4">
         <slot name="actions">
           <NuxtLink :to="`/pronos/${prono.id}`" class="btn btn-primary btn-sm">
@@ -58,4 +58,3 @@ const formatDate = (dateString: string) => {
   })
 }
 </script>
-
