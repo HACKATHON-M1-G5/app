@@ -15,7 +15,7 @@
 
 /* Amélioration des cartes */
 .card {
-  @apply border border-red-900/30;
+  @apply border-none;
 }
 
 /* Amélioration des badges */

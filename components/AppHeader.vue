@@ -26,7 +26,8 @@
           <li><NuxtLink to="/groups" class="font-bold">Mes Groupes</NuxtLink></li>
           <li><NuxtLink to="/public-bets" class="font-bold">Paris Publics</NuxtLink></li>
           <li><NuxtLink to="/leaderboard" class="text-yellow-600 font-bold">🏆 Classement</NuxtLink></li>
-          <li><NuxtLink to="/admin" class="text-red-500 font-bold">👑 Admin</NuxtLink></li>
+          <li><NuxtLink to="/store" class="text-yellow-600 font-bold">💰Boutique</NuxtLink></li>
+          <li v-if="userData"><NuxtLink to="/admin" class="text-red-500 font-bold">👑 Admin</NuxtLink></li>
         </ul>
       </div>
       <NuxtLink to="/" class="btn btn-ghost normal-case text-xl font-bold tracking-tight">
@@ -40,13 +41,15 @@
         <li><NuxtLink to="/groups" class="font-bold">Mes Groupes</NuxtLink></li>
         <li><NuxtLink to="/public-bets" class="font-bold">Paris Publics</NuxtLink></li>
         <li><NuxtLink to="/leaderboard" class="text-yellow-600 font-bold">🏆 Classement</NuxtLink></li>
-        <li><NuxtLink to="/admin" class="text-red-500 font-bold">👑 Admin</NuxtLink></li>
+        <li><NuxtLink to="/store" class="text-yellow-600 font-bold">💰Boutique</NuxtLink></li>
+        <li v-if="userData"><NuxtLink to="/admin" class="text-red-500 font-bold">👑 Admin</NuxtLink></li>
       </ul>
     </div>
 
     <div class="navbar-end gap-2">
       <div v-if="userData" class="flex items-center gap-4">
-        <div class="badge badge-primary badge-lg">💰 {{ userData.tokens }}</div>
+        <div class="badge badge-primary badge-lg">
+          <NuxtLink to="/store">💰 {{ userData.tokens }}</NuxtLink></div>
         <div class="dropdown dropdown-end">
           <label tabindex="0" class="btn btn-ghost btn-circle avatar placeholder">
             <div class="bg-neutral-focus text-neutral-content rounded-full w-10">

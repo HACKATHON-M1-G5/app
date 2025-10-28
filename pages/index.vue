@@ -4,14 +4,9 @@
     <div class="hero bg-base-100 shadow-xl rounded-box mb-8">
       <div class="hero-content text-center py-8 md:py-12">
         <div class="max-w-2xl px-2">
-          <h1 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-3 md:mb-4">
-            <span class="text-red-600">🎲</span>
-            <span
-              class="bg-gradient-to-r from-red-600 via-red-500 to-red-600 bg-clip-text text-transparent"
-            >
-              Bienvenue sur LoseAMax
-            </span>
-          </h1>
+          <div class="flex justify-center">
+            <img src="~/assets/img/logo.png" class="w-96 mx-auto mb-6" alt="LoseAMax Logo" />
+          </div>
           <p class="text-base sm:text-lg md:text-xl mb-6 md:mb-8">
             Créez des paris entre amis, rejoignez des groupes et tentez de gagner un maximum de
             tokens !
