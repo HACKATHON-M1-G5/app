@@ -2,7 +2,13 @@ import type { Team, TeamUserData, TeamWithMembers } from '~/types/database'
 
 export const useTeams = () => {
   const supabase = useSupabaseClient()
-  const { userData } = useUserData()
+  const { userData, whenUserDataReady } = useUserData()
+
+  const ensureUser = async () => {
+    const ud = await whenUserDataReady()
+    if (!ud) throw new Error('User not authenticated')
+    return ud
+  }
 
   const generateJoinCode = () => {
     return Math.random().toString(36).substring(2, 10).toUpperCase()
@@ -15,7 +21,7 @@ export const useTeams = () => {
     icon_url: string
     privacy: boolean
   }) => {
-    if (!userData.value) throw new Error('User not authenticated')
+    const userData = await ensureUser()
 
     const joinCode = generateJoinCode()
 
@@ -32,13 +38,15 @@ export const useTeams = () => {
     if (teamError) throw teamError
 
     // Add creator as owner
-    const { error: memberError } = await supabase.from('team_userdata').insert({
-      team_id: team.id,
-      userdata_id: userData.value.id,
-      status: 'owner',
-      joined_at: Date.now(),
-      token: 1000,
-    })
+    const { error: memberError } = await supabase
+      .from('team_userdata')
+      .insert({
+        team_id: team.id,
+        userdata_id: userData.id,
+        status: 'owner',
+        joined_at: Date.now(),
+        token: 1000,
+      })
 
     if (memberError) throw memberError
 
@@ -46,22 +54,17 @@ export const useTeams = () => {
   }
 
   const getMyTeams = async () => {
-    if (!userData.value) return []
+    const me = await ensureUser()
 
     const { data, error } = await supabase
-      .from('team_userdata')
-      .select(
-        `
-        *,
-        team:Teams (*)
-      `
-      )
-      .eq('userdata_id', userData.value.id)
-      .in('status', ['member', 'owner'])
+        .from('team_userdata')
+        .select(`*, team:Teams (*)`)
+        .eq('userdata_id', me.id)
+        .in('status', ['member', 'owner'])
 
     if (error) throw error
 
-    return data.map((item) => item.team) as Team[]
+    return (data ?? []).map((i: any) => i.team) as Team[]
   }
 
   const getPublicTeams = async () => {
@@ -101,7 +104,7 @@ export const useTeams = () => {
   }
 
   const joinTeam = async (teamId: string, joinCode?: string) => {
-    if (!userData.value) throw new Error('User not authenticated')
+    const userData = await ensureUser()
 
     // Verify join code for private teams
     const team = await getTeamById(teamId)
@@ -110,13 +113,15 @@ export const useTeams = () => {
       throw new Error("Code d'invitation invalide")
     }
 
-    const { error } = await supabase.from('team_userdata').insert({
-      team_id: teamId,
-      userdata_id: userData.value.id,
-      status: team.privacy ? 'pending' : 'member',
-      joined_at: Date.now(),
-      token: 1000,
-    })
+    const { error } = await supabase
+      .from('team_userdata')
+      .insert({
+        team_id: teamId,
+        userdata_id: userData.id,
+        status: team.privacy ? 'pending' : 'member',
+        joined_at: Date.now(),
+        token: 1000,
+      })
 
     if (error) throw error
 
@@ -124,13 +129,13 @@ export const useTeams = () => {
   }
 
   const leaveTeam = async (teamId: string) => {
-    if (!userData.value) throw new Error('User not authenticated')
+    const userData = await ensureUser()
 
     const { error } = await supabase
       .from('team_userdata')
       .delete()
       .eq('team_id', teamId)
-      .eq('userdata_id', userData.value.id)
+      .eq('userdata_id', userData.id)
 
     if (error) throw error
 
@@ -178,33 +183,41 @@ export const useTeams = () => {
   }
 
   const isTeamOwner = async (teamId: string) => {
-    if (!userData.value) return false
+    try {
+      const userData = await ensureUser()
 
-    const { data, error } = await supabase
-      .from('team_userdata')
-      .select('status')
-      .eq('team_id', teamId)
-      .eq('userdata_id', userData.value.id)
-      .single()
+      const { data, error } = await supabase
+          .from('team_userdata')
+          .select('status')
+          .eq('team_id', teamId)
+          .eq('userdata_id', userData.id)
+          .single()
 
-    if (error) return false
+      if (error) return false
 
-    return data.status === 'owner'
+      return data.status === 'owner'
+    } catch (e) {
+        return false
+    }
   }
 
   const getUserTeamTokens = async (teamId: string) => {
-    if (!userData.value) return 0
+    try {
+      const userData = await ensureUser()
 
-    const { data, error } = await supabase
-      .from('team_userdata')
-      .select('token')
-      .eq('team_id', teamId)
-      .eq('userdata_id', userData.value.id)
-      .single()
+      const { data, error } = await supabase
+          .from('team_userdata')
+          .select('token')
+          .eq('team_id', teamId)
+          .eq('userdata_id', userData.id)
+          .single()
 
-    if (error) return 0
+      if (error) return 0
 
-    return data.token
+      return data.token
+    } catch (e) {
+        return 0
+    }
   }
 
   return {
