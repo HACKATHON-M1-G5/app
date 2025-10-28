@@ -83,4 +83,3 @@ export interface BetWithDetails extends Bet {
 export interface UserBetWithDetails extends BetUserData {
   bet?: BetWithDetails
 }
-

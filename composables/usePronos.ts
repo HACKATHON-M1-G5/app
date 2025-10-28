@@ -32,7 +32,7 @@ export const usePronos = () => {
 
     // Create bets
     if (pronoData.bets.length > 0) {
-      const betsToInsert = pronoData.bets.map(bet => ({
+      const betsToInsert = pronoData.bets.map((bet) => ({
         prono_id: prono.id,
         title: bet.title,
         odds: bet.odds,
@@ -40,9 +40,7 @@ export const usePronos = () => {
         option_id: null,
       }))
 
-      const { error: betsError } = await supabase
-        .from('Bets')
-        .insert(betsToInsert)
+      const { error: betsError } = await supabase.from('Bets').insert(betsToInsert)
 
       if (betsError) throw betsError
     }
@@ -53,12 +51,14 @@ export const usePronos = () => {
   const getPronoById = async (pronoId: string) => {
     const { data, error } = await supabase
       .from('Pronos')
-      .select(`
+      .select(
+        `
         *,
         owner:UserDatas (*),
         team:Teams (*),
         bets:Bets (*)
-      `)
+      `
+      )
       .eq('id', pronoId)
       .single()
 
@@ -70,11 +70,13 @@ export const usePronos = () => {
   const getPublicPronos = async () => {
     const { data, error } = await supabase
       .from('Pronos')
-      .select(`
+      .select(
+        `
         *,
         owner:UserDatas (*),
         bets:Bets (*)
-      `)
+      `
+      )
       .is('team_id', null)
       .order('created_at', { ascending: false })
 
@@ -86,12 +88,14 @@ export const usePronos = () => {
   const getTeamPronos = async (teamId: string) => {
     const { data, error } = await supabase
       .from('Pronos')
-      .select(`
+      .select(
+        `
         *,
         owner:UserDatas (*),
         team:Teams (*),
         bets:Bets (*)
-      `)
+      `
+      )
       .eq('team_id', teamId)
       .order('created_at', { ascending: false })
 
@@ -105,12 +109,14 @@ export const usePronos = () => {
 
     const { data, error } = await supabase
       .from('Pronos')
-      .select(`
+      .select(
+        `
         *,
         owner:UserDatas (*),
         team:Teams (*),
         bets:Bets (*)
-      `)
+      `
+      )
       .lte('start_at', now)
       .gte('end_at', now)
       .order('created_at', { ascending: false })
@@ -120,14 +126,8 @@ export const usePronos = () => {
     return data as PronoWithBets[]
   }
 
-  const updateProno = async (
-    pronoId: string,
-    updates: Partial<Prono>
-  ) => {
-    const { error } = await supabase
-      .from('Pronos')
-      .update(updates)
-      .eq('id', pronoId)
+  const updateProno = async (pronoId: string, updates: Partial<Prono>) => {
+    const { error } = await supabase.from('Pronos').update(updates).eq('id', pronoId)
 
     if (error) throw error
 
@@ -135,10 +135,7 @@ export const usePronos = () => {
   }
 
   const deleteProno = async (pronoId: string) => {
-    const { error } = await supabase
-      .from('Pronos')
-      .delete()
-      .eq('id', pronoId)
+    const { error } = await supabase.from('Pronos').delete().eq('id', pronoId)
 
     if (error) throw error
 
@@ -146,10 +143,7 @@ export const usePronos = () => {
   }
 
   const updateBetResult = async (betId: string, result: boolean) => {
-    const { error } = await supabase
-      .from('Bets')
-      .update({ result })
-      .eq('id', betId)
+    const { error } = await supabase.from('Bets').update({ result }).eq('id', betId)
 
     if (error) throw error
 
@@ -157,10 +151,7 @@ export const usePronos = () => {
   }
 
   const getBetsByPronoId = async (pronoId: string) => {
-    const { data, error } = await supabase
-      .from('Bets')
-      .select('*')
-      .eq('prono_id', pronoId)
+    const { data, error } = await supabase.from('Bets').select('*').eq('prono_id', pronoId)
 
     if (error) throw error
 
@@ -179,4 +170,3 @@ export const usePronos = () => {
     getBetsByPronoId,
   }
 }
-

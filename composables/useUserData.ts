@@ -37,13 +37,17 @@ export const useUserData = () => {
   }
 
   // Auto-fetch when user changes
-  watch(user, (newUser) => {
-    if (newUser) {
-      fetchUserData()
-    } else {
-      userData.value = null
-    }
-  }, { immediate: true })
+  watch(
+    user,
+    (newUser) => {
+      if (newUser) {
+        fetchUserData()
+      } else {
+        userData.value = null
+      }
+    },
+    { immediate: true }
+  )
 
   return {
     userData,
@@ -51,4 +55,3 @@ export const useUserData = () => {
     refreshUserData,
   }
 }
-

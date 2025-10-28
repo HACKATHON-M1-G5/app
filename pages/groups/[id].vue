@@ -3,33 +3,33 @@
     <div v-if="loading" class="flex justify-center py-8">
       <span class="loading loading-spinner loading-lg"></span>
     </div>
-    
+
     <div v-else-if="team">
       <!-- En-tête du groupe -->
       <div class="card bg-base-100 shadow-xl mb-8">
         <div class="card-body">
-          <div class="flex items-start gap-6">
-            <div 
-              class="avatar placeholder"
-              :style="{ backgroundColor: team.primary_color }"
-            >
-              <div class="w-24 rounded-xl text-white">
-                <span v-if="!team.icon_url" class="text-4xl">{{ team.name[0] }}</span>
+          <div class="flex flex-col md:flex-row items-start gap-4 md:gap-6">
+            <div class="avatar placeholder" :style="{ backgroundColor: team.primary_color }">
+              <div class="w-20 md:w-24 rounded-xl text-white">
+                <span v-if="!team.icon_url" class="text-3xl md:text-4xl">{{ team.name[0] }}</span>
                 <img v-else :src="team.icon_url" :alt="team.name" />
               </div>
             </div>
-            
+
             <div class="flex-1">
-              <div class="flex items-center gap-3 mb-2">
-                <h1 class="text-3xl font-bold">{{ team.name }}</h1>
-                <div class="badge badge-lg" :class="team.privacy ? 'badge-secondary' : 'badge-success'">
+              <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-2">
+                <h1 class="text-2xl md:text-3xl font-bold">{{ team.name }}</h1>
+                <div
+                  class="badge badge-lg"
+                  :class="team.privacy ? 'badge-secondary' : 'badge-success'"
+                >
                   {{ team.privacy ? 'Privé' : 'Public' }}
                 </div>
               </div>
-              
-              <p class="text-lg opacity-70 mb-4">{{ team.description }}</p>
-              
-              <div class="flex gap-4 items-center">
+
+              <p class="text-base md:text-lg opacity-70 mb-4">{{ team.description }}</p>
+
+              <div class="flex flex-wrap gap-2 md:gap-4 items-center">
                 <div class="badge badge-outline badge-lg">
                   👥 {{ members.length }} membre{{ members.length > 1 ? 's' : '' }}
                 </div>
@@ -37,7 +37,7 @@
                   💰 {{ userMembership.token }} tokens
                 </div>
               </div>
-              
+
               <div v-if="team.privacy && isOwner" class="mt-4">
                 <div class="alert alert-info">
                   <div>
@@ -48,32 +48,32 @@
               </div>
             </div>
           </div>
-          
+
           <div class="card-actions justify-end mt-4">
-            <button 
+            <button
               v-if="!isMember && !isOwner"
-              @click="handleJoinTeam" 
-              class="btn btn-primary"
+              class="btn btn-primary btn-sm md:btn-md"
               :disabled="joining"
+              @click="handleJoinTeam"
             >
               <span v-if="joining" class="loading loading-spinner"></span>
               {{ joining ? 'Inscription...' : 'Rejoindre le groupe' }}
             </button>
-            
-            <button 
+
+            <button
               v-if="isMember && !isOwner"
-              @click="handleLeaveTeam" 
-              class="btn btn-error"
+              class="btn btn-error btn-sm md:btn-md"
               :disabled="leaving"
+              @click="handleLeaveTeam"
             >
               <span v-if="leaving" class="loading loading-spinner"></span>
               {{ leaving ? 'Sortie...' : 'Quitter le groupe' }}
             </button>
-            
-            <NuxtLink 
+
+            <NuxtLink
               v-if="isOwner"
-              :to="`/groups/${team.id}/create-prono`" 
-              class="btn btn-primary"
+              :to="`/groups/${team.id}/create-prono`"
+              class="btn btn-primary btn-sm md:btn-md"
             >
               ➕ Créer un pari
             </NuxtLink>
@@ -82,16 +82,16 @@
       </div>
 
       <!-- Onglets -->
-      <div class="tabs tabs-boxed mb-6">
-        <a 
-          class="tab" 
+      <div class="tabs tabs-boxed mb-6 overflow-x-auto">
+        <a
+          class="tab"
           :class="{ 'tab-active': activeTab === 'pronos' }"
           @click="activeTab = 'pronos'"
         >
           🎯 Paris
         </a>
-        <a 
-          class="tab" 
+        <a
+          class="tab"
           :class="{ 'tab-active': activeTab === 'members' }"
           @click="activeTab = 'members'"
         >
@@ -104,7 +104,7 @@
         <div v-if="loadingPronos" class="flex justify-center py-8">
           <span class="loading loading-spinner loading-lg"></span>
         </div>
-        
+
         <div v-else-if="pronos.length === 0" class="alert alert-info">
           <span>Aucun pari pour ce groupe. {{ isOwner ? 'Créez-en un !' : '' }}</span>
         </div>
@@ -155,30 +155,28 @@
 
       <div v-if="activeTab === 'members'">
         <div class="grid grid-cols-1 gap-4">
-          <div 
-            v-for="member in members" 
-            :key="member.id" 
-            class="card bg-base-100 shadow-xl"
-          >
+          <div v-for="member in members" :key="member.id" class="card bg-base-100 shadow-xl">
             <div class="card-body">
-              <div class="flex justify-between items-center">
-                <div class="flex items-center gap-4">
+              <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3">
+                <div class="flex items-center gap-3 sm:gap-4">
                   <div class="avatar placeholder">
-                    <div class="bg-neutral-focus text-neutral-content rounded-full w-12">
-                      <span class="text-xl">{{ member.userdata.username[0].toUpperCase() }}</span>
+                    <div class="bg-neutral-focus text-neutral-content rounded-full w-10 sm:w-12">
+                      <span class="text-lg sm:text-xl">{{
+                        member.userdata.username[0].toUpperCase()
+                      }}</span>
                     </div>
                   </div>
-                  
+
                   <div>
                     <h3 class="font-bold">{{ member.userdata.username }}</h3>
-                    <div class="flex gap-2 mt-1">
-                      <div 
-                        class="badge" 
+                    <div class="flex flex-wrap gap-2 mt-1">
+                      <div
+                        class="badge"
                         :class="{
                           'badge-primary': member.status === 'owner',
                           'badge-success': member.status === 'member',
                           'badge-warning': member.status === 'pending',
-                          'badge-error': member.status === 'banned'
+                          'badge-error': member.status === 'banned',
                         }"
                       >
                         {{ statusLabel(member.status) }}
@@ -187,36 +185,36 @@
                     </div>
                   </div>
                 </div>
-                
-                <div v-if="isOwner && member.status !== 'owner'" class="flex gap-2">
-                  <button 
+
+                <div v-if="isOwner && member.status !== 'owner'" class="flex flex-wrap gap-2">
+                  <button
                     v-if="member.status === 'pending'"
-                    @click="handleUpdateStatus(member.userdata_id, 'member')" 
-                    class="btn btn-success btn-sm"
+                    class="btn btn-success btn-xs sm:btn-sm"
+                    @click="handleUpdateStatus(member.userdata_id, 'member')"
                   >
                     ✓ Accepter
                   </button>
-                  
-                  <button 
+
+                  <button
                     v-if="member.status === 'pending'"
-                    @click="handleUpdateStatus(member.userdata_id, 'banned')" 
-                    class="btn btn-error btn-sm"
+                    class="btn btn-error btn-xs sm:btn-sm"
+                    @click="handleUpdateStatus(member.userdata_id, 'banned')"
                   >
                     ✗ Refuser
                   </button>
-                  
-                  <button 
+
+                  <button
                     v-if="member.status === 'member'"
-                    @click="handleUpdateStatus(member.userdata_id, 'banned')" 
-                    class="btn btn-error btn-sm"
+                    class="btn btn-error btn-xs sm:btn-sm"
+                    @click="handleUpdateStatus(member.userdata_id, 'banned')"
                   >
                     🚫 Bannir
                   </button>
-                  
-                  <button 
+
+                  <button
                     v-if="member.status === 'banned'"
-                    @click="handleUpdateStatus(member.userdata_id, 'member')" 
-                    class="btn btn-success btn-sm"
+                    class="btn btn-success btn-xs sm:btn-sm"
+                    @click="handleUpdateStatus(member.userdata_id, 'member')"
                   >
                     ↩️ Débannir
                   </button>
@@ -227,7 +225,7 @@
         </div>
       </div>
     </div>
-    
+
     <div v-else class="alert alert-error">
       <span>Groupe introuvable</span>
     </div>
@@ -244,14 +242,8 @@ definePageMeta({
 const route = useRoute()
 const teamId = route.params.id as string
 
-const { 
-  getTeamById, 
-  getTeamMembers, 
-  joinTeam, 
-  leaveTeam, 
-  isTeamOwner,
-  updateMemberStatus 
-} = useTeams()
+const { getTeamById, getTeamMembers, joinTeam, leaveTeam, isTeamOwner, updateMemberStatus } =
+  useTeams()
 const { getTeamPronos } = usePronos()
 const { userData } = useUserData()
 
@@ -268,7 +260,7 @@ const isOwner = ref(false)
 
 const userMembership = computed(() => {
   if (!userData.value) return null
-  return members.value.find(m => m.userdata_id === userData.value!.id)
+  return members.value.find((m) => m.userdata_id === userData.value!.id)
 })
 
 const isMember = computed(() => {
@@ -282,7 +274,7 @@ onMounted(async () => {
 
 const loadTeamData = async () => {
   loading.value = true
-  
+
   try {
     team.value = await getTeamById(teamId)
     members.value = await getTeamMembers(teamId)
@@ -296,7 +288,7 @@ const loadTeamData = async () => {
 
 const loadPronos = async () => {
   loadingPronos.value = true
-  
+
   try {
     pronos.value = await getTeamPronos(teamId)
   } catch (e) {
@@ -308,12 +300,12 @@ const loadPronos = async () => {
 
 const handleJoinTeam = async () => {
   joining.value = true
-  
+
   try {
     await joinTeam(teamId)
     await loadTeamData()
   } catch (e: any) {
-    alert(e.message || 'Erreur lors de l\'inscription')
+    alert(e.message || "Erreur lors de l'inscription")
   } finally {
     joining.value = false
   }
@@ -321,9 +313,9 @@ const handleJoinTeam = async () => {
 
 const handleLeaveTeam = async () => {
   if (!confirm('Êtes-vous sûr de vouloir quitter ce groupe ?')) return
-  
+
   leaving.value = true
-  
+
   try {
     await leaveTeam(teamId)
     await navigateTo('/groups')
@@ -334,7 +326,10 @@ const handleLeaveTeam = async () => {
   }
 }
 
-const handleUpdateStatus = async (userId: string, status: 'pending' | 'member' | 'banned' | 'owner') => {
+const handleUpdateStatus = async (
+  userId: string,
+  status: 'pending' | 'member' | 'banned' | 'owner'
+) => {
   try {
     await updateMemberStatus(teamId, userId, status)
     await loadTeamData()
@@ -348,7 +343,7 @@ const statusLabel = (status: string) => {
     owner: '👑 Propriétaire',
     member: '✓ Membre',
     pending: '⏳ En attente',
-    banned: '🚫 Banni'
+    banned: '🚫 Banni',
   }
   return labels[status] || status
 }
@@ -377,4 +372,3 @@ const formatDate = (dateString: string) => {
   })
 }
 </script>
-
