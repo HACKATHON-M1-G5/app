@@ -124,7 +124,24 @@ export const useShop = () => {
     }
 
     const purchaseItem = async (itemId: string) => {
+        const item = (await getItems()).find(i => i.id === itemId)
+
+        if (!item) {
+            throw new Error('Item not found')
+        }
+
         const userData = await ensureUser()
+        if (userData.tokens < item.price) {
+            throw new Error('Insufficient tokens')
+        }
+
+        const { deductTokens } = useTokens()
+
+        const success = await deductTokens(item.price)
+
+        if (!success) {
+            throw new Error('Failed to deduct tokens')
+        }
     }
 
     return {

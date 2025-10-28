@@ -141,7 +141,7 @@ import {type ShopItem, useShop} from "~/composables/useShop";
 
 // Composables attendus côté app
 // useShop: { getItems, purchaseItem }
-const { balance, addTokens, refreshBalance } = useTokens()
+const { balance, addTokens } = useTokens()
 const { getItems, purchaseItem } = useShop()
 
 const placeholder = 'https://picsum.photos/640/360?grayscale'
@@ -218,7 +218,6 @@ async function purchase(item: ShopItem) {
   purchasingId.value = item.id
   try {
     await purchaseItem(item.id)
-    await refreshBalance()
   } catch (e: any) {
     alert(e?.message || 'Erreur lors de l\'achat')
   } finally {
@@ -259,7 +258,6 @@ async function claimReward() {
   }
   try {
     await addTokens(rewardAmount)
-    await refreshBalance()
     closeReward()
   } catch (e: any) {
     rewardError.value = e?.message || 'Impossible d\'attribuer la récompense.'
