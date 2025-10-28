@@ -18,10 +18,6 @@
   @apply border border-red-900/30;
 }
 
-.card:hover {
-  @apply border-red-600/50;
-}
-
 /* Amélioration des badges */
 .badge-primary {
   @apply bg-gradient-to-r from-red-600 to-red-700;
